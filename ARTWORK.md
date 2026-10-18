@@ -51,4 +51,3 @@ ROW 5: original rune-stone guardian golem, broad shoulders and massive rounded h
 ROW 6: original friendly young mechanical wyvern, stocky teal-scaled dragon with small copper armor pieces, orange wing membranes, expressive violet eyes, two wings and two hind legs, no rider. Idle on feet with wings half-open; walking frames have alternating hind feet and wing positions; attack breathes a small orange flame. About 1.6 times soldier width, 1.3 times height.
 The result must be actual usable isolated game sprites, not portrait cards, not a lineup illustration. Every sprite wholly inside its own cell, real clean transparent background, no environmental backdrop or full-cell color glows. Original designs only, no recognizable trademark characters.
 ```
-
