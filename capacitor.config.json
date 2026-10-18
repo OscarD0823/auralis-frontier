@@ -1,0 +1,7 @@
+{
+  "appId": "com.oscard.auralis.frontier",
+  "appName": "Auralis Frontier",
+  "webDir": "dist",
+  "android": { "backgroundColor": "#14252d", "allowMixedContent": false },
+  "server": { "androidScheme": "https" }
+}

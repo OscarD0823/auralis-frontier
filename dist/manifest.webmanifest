@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "Auralis Frontier",
+  "short_name": "Frontier",
+  "description": "Construye tu base, entrena tu ejército y recupera la frontera.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#14252d",
+  "theme_color": "#101b24",
+  "orientation": "any",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

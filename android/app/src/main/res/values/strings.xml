@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Auralis Frontier</string>
+    <string name="title_activity_main">Auralis Frontier</string>
+    <string name="package_name">com.oscard.auralis.frontier</string>
+    <string name="custom_url_scheme">com.oscard.auralis.frontier</string>
+</resources>

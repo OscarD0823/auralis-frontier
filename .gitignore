@@ -1,0 +1,17 @@
+node_modules/
+.sites-local/
+.preview/
+*.log
+*.tar.gz
+artifacts/
+release/
+.auralis-signing/
+.openai/
+android/local.properties
+android/.gradle/
+android/**/build/
+android/.kotlin/
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+android/capacitor-cordova-android-plugins/

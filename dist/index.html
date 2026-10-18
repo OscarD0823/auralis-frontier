@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101b24"><meta name="description" content="Auralis Frontier: construye tu base, entrena tu ejército y recupera la frontera. Un juego de estrategia para computadora y celular.">
+  <link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="stylesheet" href="./styles.css"><title>Auralis Frontier — La frontera te espera</title>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Auralis Frontier, inicio"><span class="brand-mark">A<span></span></span><span>AURALIS<small>F R O N T I E R</small></span></a>
+    <div class="resources" aria-label="Recursos"><div class="resource"><i class="resource-icon credits">◈</i><span><small>ÁUREOS</small><strong id="credits">900</strong></span><em id="credits-rate">+2/s</em></div><div class="resource"><i class="resource-icon alloy">⬡</i><span><small>ALEACIÓN</small><strong id="alloy">420</strong></span><em id="alloy-rate">+1/s</em></div><div class="resource"><i class="resource-icon energy">ϟ</i><span><small>ÉTER</small><strong id="energy">240</strong></span><em id="energy-rate">+1/s</em></div></div>
+    <button id="downloads-btn" class="header-download" aria-label="Descargar o instalar el juego"><span data-icon="download"></span><small>INSTALAR</small></button>
+    <button id="settings-btn" class="commander" aria-label="Abrir ajustes y guardado"><span class="avatar">OC</span><span>COMANDANTE<small id="level">Nivel 1</small></span><span class="gear">⚙</span></button>
+  </header>
+  <nav class="rail" aria-label="Secciones"><button class="nav-btn active" data-view="base" title="Mi base"><span data-icon="base"></span><small>MI BASE</small></button><button class="nav-btn" data-view="army" title="Ejército"><span data-icon="army"></span><small>EJÉRCITO</small></button><button class="nav-btn" data-view="missions" title="Operaciones"><span data-icon="missions"></span><small>OPERACIONES</small></button><button class="nav-btn" data-view="village" title="Poblado y encargos"><span data-icon="village"></span><small>POBLADO</small></button><div class="rail-line"></div><button class="nav-btn" id="help-btn" title="Cómo jugar"><span data-icon="help"></span><small>GUÍA</small></button><div class="rail-bottom"><span class="connection-dot"></span><small id="save-status">GUARDADO LOCAL</small></div></nav>
+  <main class="playfield">
+    <div class="field-heading"><div class="eyebrow"><span></span><span id="field-eyebrow">TERRITORIO ALIADO</span></div><h1 id="field-title">Un nuevo comienzo.</h1><p id="field-subtitle">Tecnología, magia y un mundo por construir.</p></div>
+    <div id="scene" class="scene"><canvas id="game" aria-label="Mapa isométrico de la base. Toca un edificio para seleccionarlo y usa Construir para añadir edificios."></canvas></div>
+    <div class="map-controls"><button id="zoom-in" aria-label="Acercar mapa">+</button><button id="zoom-out" aria-label="Alejar mapa">−</button><button id="center-map" aria-label="Centrar mapa"><span data-icon="target"></span></button></div>
+    <div class="map-location"><span data-icon="pin"></span><span id="location-label">PUESTO AURORA <b>·</b> SECTOR 00</span></div>
+    <div id="placement-bar" class="placement-bar" hidden><span id="placement-label"></span><button id="cancel-placement">Cancelar <kbd>Esc</kbd></button></div>
+    <div id="battle-bar" class="battle-bar" hidden><span><i class="live-dot"></i> OPERACIÓN EN CURSO</span><strong id="battle-timer">03:00</strong><button id="retreat-btn">Retirarse</button></div>
+    <section id="panel" class="panel" aria-label="Panel de juego"></section>
+    <div id="dock" class="dock"></div>
+    <div id="scene-hint" class="scene-hint">Arrastra para explorar <span>·</span> Toca un edificio para gestionarlo</div>
+  </main>
+  <aside class="sidebar" id="sidebar"></aside>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<dialog id="modal"><div id="modal-content"></div></dialog>
+<input type="file" id="import-input" accept="application/json,.json" hidden>
+<script type="module" src="./app.js"></script>
+</body></html>

@@ -1,0 +1,27 @@
+{
+  "name": "auralis-frontier",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Juego de estrategia original de Auralis para web, PC y móvil",
+  "main": "desktop/main.cjs",
+  "author": "OscarD0823",
+  "license": "MIT",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "desktop:build": "electron-builder --win nsis --x64",
+    "android:sync": "cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.3",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/filesystem": "^8.1.4",
+    "@capacitor/share": "^8.0.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.3",
+    "electron": "44.7.0",
+    "electron-builder": "26.15.3"
+  }
+}
