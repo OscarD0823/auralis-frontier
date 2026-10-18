@@ -1,10 +1,10 @@
 export const VERSION = 1;
 export const GRID = 18;
 export const BUILDINGS = {
-  command: { name: 'Centro de mando', tag: 'COMANDO', description: 'El corazón de tu colonia. Produce créditos y dirige la expansión.', cost: {}, rate: { credits: 2 }, color: '#75d4ca', size: 2, hp: 1800 },
+  command: { name: 'Centro de mando', tag: 'COMANDO', description: 'El corazón de tu colonia. Produce áureos y desbloquea tropas al mejorar: maga y gólem en nivel 2, draco en nivel 3.', cost: {}, rate: { credits: 2 }, color: '#75d4ca', size: 2, hp: 1800 },
   mine: { name: 'Extractor', tag: 'ECONOMÍA', description: 'Extrae aleación. Véndela o entrégala a los habitantes para ganar áureos.', cost: { credits: 180 }, rate: { alloy: 1.2 }, color: '#f3b75e', size: 2, hp: 600 },
   reactor: { name: 'Reactor de éter', tag: 'ALQUIMIA', description: 'Combina tecnología y magia para extraer éter. Los alquimistas pagan bien por él.', cost: { credits: 210 }, rate: { energy: 1 }, color: '#78c8ee', size: 2, hp: 500 },
-  barracks: { name: 'Cuartel', tag: 'EJÉRCITO', description: 'Entrena exploradores, blindados y drones. Cada nivel acelera el entrenamiento.', cost: { credits: 320 }, rate: {}, color: '#a5bc82', size: 2, hp: 850 },
+  barracks: { name: 'Cuartel', tag: 'EJÉRCITO', description: 'Entrena seis clases de tropas: infantería, vehículos, magia y criaturas. Cada nivel acelera el entrenamiento.', cost: { credits: 320 }, rate: {}, color: '#a5bc82', size: 2, hp: 850 },
   refinery: { name: 'Refinería', tag: 'ECONOMÍA', description: 'Comercia los minerales de la frontera y produce áureos para tu colonia.', cost: { credits: 370 }, rate: { credits: 3 }, color: '#deab7d', size: 2, hp: 700 },
   turret: { name: 'Torre centinela', tag: 'DEFENSA', description: 'Dispara a los invasores. Cada nivel también mejora el daño de tu ejército un 4%.', cost: { credits: 330 }, rate: {}, color: '#d59c88', size: 1, hp: 1000 },
   sanctum: { name: 'Santuario', tag: 'MAGIA', description: 'Cristal de combate que dispara éter a larga distancia contra invasores.', cost: { credits: 580 }, rate: {}, color: '#bf9eeb', size: 2, hp: 750 },
@@ -14,6 +14,9 @@ export const UNITS = {
   ranger: { name: 'Explorador', short: 'EXPLORADOR', description: 'Infantería versátil. Rápida y económica.', cost: { credits: 80 }, hp: 125, damage: 19, range: 1.9, speed: 1.5, time: 6, color: '#8de3ce' },
   bulwark: { name: 'Bastión', short: 'BASTIÓN', description: 'Blindado pesado. Resiste el fuego enemigo.', cost: { credits: 260 }, hp: 430, damage: 40, range: 2.7, speed: .72, time: 12, color: '#f0c77e' },
   wasp: { name: 'Avispa arcana', short: 'AVISPA ARCANA', description: 'Dron impulsado por magia. Gran alcance y movilidad.', cost: { credits: 210 }, hp: 160, damage: 25, range: 3.6, speed: 1.65, time: 9, color: '#bbabf5' },
+  arcanist: { name: 'Maga de éter', short: 'MAGA DE ÉTER', description: 'Hechicera de largo alcance. Sus orbes dañan también a los edificios cercanos al impacto.', cost: { credits: 300 }, hp: 185, damage: 37, range: 4, speed: 1.1, time: 14, color: '#c49bea', requiredLevel: 2, splash: 1.7 },
+  golem: { name: 'Guardián rúnico', short: 'GUARDIÁN RÚNICO', description: 'Gólem de piedra que resiste grandes impactos y prioriza las defensas de la fortaleza.', cost: { credits: 420 }, hp: 850, damage: 42, range: 1.4, speed: .52, time: 18, color: '#8ed4bf', requiredLevel: 2, preferDefences: true },
+  drake: { name: 'Draco de bronce', short: 'DRACO DE BRONCE', description: 'Criatura de magia y metal. Su aliento de fuego alcanza a varios edificios cercanos.', cost: { credits: 560 }, hp: 390, damage: 58, range: 3.2, speed: 1.35, time: 22, color: '#e9a76a', requiredLevel: 3, splash: 2 },
 };
 export const MISSIONS = [
   { name: 'Señal en el desierto', region: 'SECTOR 01 · LAS DUNAS', description: 'Una estación del Eclipse bloquea la ruta de suministros. Destruye su núcleo y abre el paso.', reward: { credits: 500, alloy: 200, energy: 90 }, turrets: 2, hp: 650 },
@@ -23,7 +26,7 @@ export const MISSIONS = [
 export const unitCount = army => Object.values(army).reduce((a,b)=>a+b,0);
 export const ready = (b, now) => (!b.readyAt || b.readyAt <= now) && b.hp !== 0;
 export function createGame(now = Date.now()) {
-  return { version: VERSION, createdAt: now, updatedAt: now, resources: { credits: 900, alloy: 420, energy: 240 }, xp: 0, campaign: 0, army: { ranger: 6, bulwark: 1, wasp: 1 }, jobs: [], buildings: [
+  return { version: VERSION, createdAt: now, updatedAt: now, resources: { credits: 900, alloy: 420, energy: 240 }, xp: 0, campaign: 0, army: { ranger: 6, bulwark: 1, wasp: 1, arcanist: 0, golem: 0, drake: 0 }, jobs: [], buildings: [
     { id: 'hq', type: 'command', x: 7, y: 7, level: 1 },
     { id: 'mine-0', type: 'mine', x: 4, y: 7, level: 1 },
     { id: 'reactor-0', type: 'reactor', x: 7, y: 4, level: 1 },
@@ -84,6 +87,8 @@ export function upgrade(s,id,now=Date.now()) {
 }
 export function train(s,type,now=Date.now()) {
   if (!UNITS[type]) return {ok:false,message:'Unidad desconocida.'};
+  const hq=s.buildings.find(b=>b.type==='command');
+  if((hq?.level||1)<(UNITS[type].requiredLevel||1))return {ok:false,message:'Mejora el centro de mando al nivel '+UNITS[type].requiredLevel+' para desbloquear esta tropa.'};
   const barracks=s.buildings.filter(b=>b.type==='barracks'&&ready(b,now));
   if (!barracks.length) return {ok:false,message:'Necesitas un cuartel terminado.'};
   if (unitCount(s.army)+s.jobs.length+(s.battle?unitCount(s.battle.reserve)+s.battle.units.filter(u=>u.hp>0).length:0)>=60) return {ok:false,message:'El límite de población es de 60 unidades.'};
@@ -104,9 +109,11 @@ export function startBattle(s,index,now=Date.now()) {
   const enemies=[{id:'core',type:'core',x:11.5,y:8,hp:m.hp,maxHp:m.hp,cooldown:0}];
   const positions=[[8,6],[10,11],[13,5],[14,10]];
   for(let i=0;i<m.turrets;i++)enemies.push({id:'enemy-'+i,type:'turret',x:positions[i][0],y:positions[i][1],hp:210+index*200,maxHp:210+index*200,cooldown:i*.25});
+  const outposts=[{type:'mine',x:13.4,y:12.5},{type:'refinery',x:14.5,y:7.5},{type:'barracks',x:10.2,y:3.2}];
+  for(const [i,b]of outposts.slice(0,2+Math.min(index,1)).entries())enemies.push({...b,id:'outpost-'+i,hp:240+index*140,maxHp:240+index*140,cooldown:0});
   const bonus=s.buildings.filter(b=>b.type==='turret'&&ready(b,now)).reduce((a,b)=>a+b.level*.04,0);
-  s.battle={mission:index,reserve:{...s.army},units:[],enemies,elapsed:0,bonus:Math.min(bonus,.4),rally:{x:9,y:8},outcome:null};
-  s.army={ranger:0,bulwark:0,wasp:0};
+  s.battle={mission:index,reserve:Object.fromEntries(Object.keys(UNITS).map(k=>[k,s.army[k]||0])),units:[],enemies,elapsed:0,bonus:Math.min(bonus,.4),rally:{x:9,y:8},outcome:null};
+  s.army=Object.fromEntries(Object.keys(UNITS).map(k=>[k,0]));
   return {ok:true,message:'Despliega tus tropas en la zona azul.'};
 }
 export function deploy(s,type,x,y) {
@@ -123,15 +130,21 @@ export function battleStep(s,dt) {
   const shots=[];
   for(const u of b.units) {
     if(u.hp<=0)continue;
-    const targets=b.enemies.filter(e=>e.hp>0);if(!targets.length)break;
+    const spec=UNITS[u.type];
+    let targets=b.enemies.filter(e=>e.hp>0);if(!targets.length)break;
+    if(spec.preferDefences&&targets.some(e=>e.type==='turret'))targets=targets.filter(e=>e.type==='turret');
     targets.sort((a,c)=>Math.hypot(u.x-a.x,u.y-a.y)-Math.hypot(u.x-c.x,u.y-c.y));
-    const e=targets[0],spec=UNITS[u.type],dist=Math.hypot(e.x-u.x,e.y-u.y);
+    const e=targets[0],dist=Math.hypot(e.x-u.x,e.y-u.y);
     u.cooldown=Math.max(0,u.cooldown-dt);
     if(dist>spec.range) {u.x+=(e.x-u.x)/dist*spec.speed*dt;u.y+=(e.y-u.y)/dist*spec.speed*dt;}
-    else if(u.cooldown<=0) {e.hp=Math.max(0,e.hp-spec.damage*(1+b.bonus));u.cooldown=.75;shots.push({x:u.x,y:u.y,tx:e.x,ty:e.y,enemy:false});}
+    else if(u.cooldown<=0) {
+      const damage=spec.damage*(1+b.bonus);e.hp=Math.max(0,e.hp-damage);
+      if(spec.splash)for(const other of b.enemies)if(other!==e&&other.hp>0&&Math.hypot(other.x-e.x,other.y-e.y)<=spec.splash)other.hp=Math.max(0,other.hp-damage*.55);
+      u.cooldown=.75;shots.push({x:u.x,y:u.y,tx:e.x,ty:e.y,enemy:false,kind:u.type});
+    }
   }
   for(const e of b.enemies) {
-    if(e.hp<=0||e.type==='core')continue;
+    if(e.hp<=0||e.type!=='turret')continue;
     e.cooldown=Math.max(0,e.cooldown-dt);
     const targets=b.units.filter(u=>u.hp>0&&Math.hypot(u.x-e.x,u.y-e.y)<4.6);
     targets.sort((a,c)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(c.x-e.x,c.y-e.y));
@@ -154,7 +167,12 @@ export function finishBattle(s,retreat=false) {
   return result;
 }
 export function readSave(raw,now=Date.now()) {
-  let s;try{s=typeof raw==='string'?JSON.parse(raw):raw;}catch{return null;}
+  let s;try{s=JSON.parse(typeof raw==='string'?raw:JSON.stringify(raw));}catch{return null;}
+  // Old 0.1.0 saves keep their base, army and in-progress battles when the roster grows.
+  for(const type of ['arcanist','golem','drake']){
+    if(s?.army&&typeof s.army==='object'&&!Object.hasOwn(s.army,type))s.army[type]=0;
+    if(s?.battle?.reserve&&typeof s.battle.reserve==='object'&&!Object.hasOwn(s.battle.reserve,type))s.battle.reserve[type]=0;
+  }
   const finite=(n,min,max)=>typeof n==='number'&&Number.isFinite(n)&&n>=min&&n<=max;
   const integer=(n,min,max)=>Number.isInteger(n)&&finite(n,min,max);
   if(!s||s.version!==VERSION||!finite(s.createdAt,0,now+86400000)||!finite(s.updatedAt,0,now+86400000)||!integer(s.campaign,0,3)||!finite(s.xp,0,1e9))return null;
@@ -180,9 +198,9 @@ export function readSave(raw,now=Date.now()) {
     if(s.raid)return null;
     const b=s.battle;
     if(!integer(b.mission,0,2)||b.mission>s.campaign||!finite(b.elapsed,0,181)||!finite(b.bonus,0,.4)||![null,'victory','defeat'].includes(b.outcome)||!b.reserve||!Object.keys(b.reserve).every(k=>Object.hasOwn(UNITS,k))||!Object.keys(UNITS).every(k=>integer(b.reserve[k],0,60)))return null;
-    if(!Array.isArray(b.units)||b.units.length>60||!Array.isArray(b.enemies)||b.enemies.length!==MISSIONS[b.mission].turrets+1)return null;
+    if(!Array.isArray(b.units)||b.units.length>60||!Array.isArray(b.enemies)||b.enemies.length<MISSIONS[b.mission].turrets+1||b.enemies.length>MISSIONS[b.mission].turrets+4)return null;
     const entity=e=>finite(e.x,0,18)&&finite(e.y,0,18)&&finite(e.hp,0,10000)&&finite(e.maxHp,1,10000)&&e.hp<=e.maxHp&&finite(e.cooldown,-1,5);
-    if(b.units.some(u=>!Object.hasOwn(UNITS,u.type)||!entity(u))||b.enemies.some(e=>!['core','turret'].includes(e.type)||!entity(e))||b.enemies.filter(e=>e.type==='core').length!==1)return null;
+    if(b.units.some(u=>!Object.hasOwn(UNITS,u.type)||!entity(u))||b.enemies.some(e=>!['core','turret','mine','refinery','barracks'].includes(e.type)||!entity(e))||b.enemies.filter(e=>e.type==='core').length!==1)return null;
     if(unitCount(s.army)+s.jobs.length+unitCount(b.reserve)+b.units.filter(u=>u.hp>0).length>60)return null;
   } else if(unitCount(s.army)+s.jobs.length>60)return null;
   // Strip unrelated JSON properties before the save enters the application.

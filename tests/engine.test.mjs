@@ -45,3 +45,22 @@ test('a moving army and a live raid remain reloadable throughout combat',()=>{
 test('a bankrupt colony can restart production after the command falls',()=>{
   const s=E.createGame(now);s.resources={credits:0,alloy:0,energy:0};s.buildings.forEach(b=>b.hp=0);assert.equal(E.production(s,now).credits,0);assert.equal(E.repair(s,'hq').ok,true);assert.equal(E.production(s,now).credits,2);E.advance(s,now+10000);assert.equal(s.resources.credits,20);
 });
+test('0.1.0 colonies and battles migrate without losing the original roster',()=>{
+  const s=E.createGame(now);for(const k of ['arcanist','golem','drake'])delete s.army[k];
+  const migrated=E.readSave(JSON.stringify(s),now);assert.ok(migrated);assert.equal(migrated.army.ranger,6);assert.equal(migrated.army.drake,0);
+  E.startBattle(s,0,now);for(const k of ['arcanist','golem','drake']){delete s.army[k];delete s.battle.reserve[k];}
+  s.battle.enemies=s.battle.enemies.filter(e=>e.type==='core'||e.type==='turret');
+  const battle=E.readSave(JSON.stringify(s),now);assert.ok(battle);assert.equal(battle.battle.reserve.ranger,6);E.finishBattle(battle,true);assert.equal(battle.army.drake,0);assert.equal(battle.army.ranger,6);
+});
+test('new troops unlock through command improvements and train normally',()=>{
+  const s=E.createGame(now);s.resources.credits=10000;assert.equal(E.train(s,'arcanist',now).ok,false);assert.equal(E.train(s,'golem',now).ok,false);assert.equal(E.train(s,'drake',now).ok,false);
+  const hq=s.buildings.find(b=>b.type==='command');hq.level=2;hq.hp=E.BUILDINGS.command.hp*2;
+  assert.equal(E.train(s,'arcanist',now).ok,true);assert.equal(E.train(s,'golem',now).ok,true);assert.equal(E.train(s,'drake',now).ok,false);
+  hq.level=3;hq.hp=E.BUILDINGS.command.hp*3;assert.equal(E.train(s,'drake',now).ok,true);E.advance(s,now+60000);
+  assert.equal(s.army.arcanist,1);assert.equal(s.army.golem,1);assert.equal(s.army.drake,1);assert.ok(E.readSave(JSON.stringify(s),now+60000));
+});
+test('area attacks damage nearby targets and golems prioritize defences',()=>{
+  const s=E.createGame(now);s.army.arcanist=1;s.army.golem=1;E.startBattle(s,0,now);E.deploy(s,'arcanist',4,8);const u=s.battle.units[0];u.x=9;u.y=8;
+  const core=s.battle.enemies[0],other=s.battle.enemies[1];core.x=10;core.y=8;other.x=10.5;other.y=8;const hp=other.hp;E.battleStep(s,.1);assert.ok(core.hp<core.maxHp);assert.ok(other.hp<hp);
+  E.deploy(s,'golem',4,8);const golem=s.battle.units[1];golem.x=8;golem.y=8;core.x=8.2;core.y=8;other.x=12;other.y=8;const before=golem.x;E.battleStep(s,.1);assert.ok(golem.x>before,'golem moves towards cannon instead of attacking nearby core');
+});
