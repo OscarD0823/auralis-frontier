@@ -1,5 +1,7 @@
+import { createFrontier, colonyRates, advanceFrontier, capacity, enemyFieldStep, tacticalStep, environmentalStep, syncGarrison, conquer, regionInfo, validFrontier, validMap } from './frontier.js';
+export * from './frontier.js';
 export const VERSION = 1;
-export const GRID = 18;
+export const GRID = 48;
 export const BUILDINGS = {
   command: { name: 'Centro de mando', tag: 'COMANDO', description: 'El corazón de tu colonia. Produce áureos y desbloquea tropas al mejorar: maga y gólem en nivel 2, draco en nivel 3.', cost: {}, rate: { credits: 2 }, color: '#75d4ca', size: 2, hp: 1800 },
   mine: { name: 'Extractor', tag: 'ECONOMÍA', description: 'Extrae aleación. Véndela o entrégala a los habitantes para ganar áureos.', cost: { credits: 180 }, rate: { alloy: 1.2 }, color: '#f3b75e', size: 2, hp: 600 },
@@ -10,6 +12,18 @@ export const BUILDINGS = {
   sanctum: { name: 'Santuario', tag: 'MAGIA', description: 'Cristal de combate que dispara éter a larga distancia contra invasores.', cost: { credits: 580 }, rate: {}, color: '#bf9eeb', size: 2, hp: 750 },
   wall: { name: 'Muralla', tag: 'DEFENSA', description: 'Frena las incursiones y protege a los edificios de producción.', cost: { credits: 70 }, rate: {}, color: '#a8b1a0', size: 1, hp: 1400 },
 };
+Object.assign(BUILDINGS, {
+ garage:{name:'Fábrica de vehículos',tag:'VEHÍCULOS',description:'Construye jeeps, tanques y camiones lanzamisiles. Cada nivel acelera su producción.',cost:{credits:480},rate:{},size:2,hp:1000,color:'#9eac75'},
+ airfield:{name:'Hangar aéreo',tag:'AVIACIÓN',description:'Fabrica helicópteros de ataque. Cada nivel acelera la fabricación.',cost:{credits:650},rate:{},size:2,hp:950,color:'#8ca9a3'},
+ battery:{name:'Batería de misiles',tag:'DEFENSA',description:'Defensa de largo alcance: daño de área contra invasores en un radio de 9 casillas.',cost:{credits:700},rate:{},size:2,hp:1100,color:'#b8c891'},
+ lab:{name:'Laboratorio',tag:'INVESTIGACIÓN',description:'Investiga armas, blindaje y logística. Sus mejoras se aplican a todo tu ejército.',cost:{credits:550},rate:{},size:2,hp:700,color:'#8cbde1'},
+ hospital:{name:'Hospital de campaña',tag:'APOYO',description:'Rescata hasta el 25% de las bajas por nivel después de cada batalla, con un máximo del 75%.',cost:{credits:430},rate:{},size:2,hp:650,color:'#b9e0bd'},
+ market:{name:'Mercado',tag:'COMERCIO',description:'Cada nivel mejora los ingresos de ventas y encargos un 20%.',cost:{credits:350},rate:{},size:2,hp:700,color:'#e1ba7b'},
+ embassy:{name:'Embajada',tag:'DIPLOMACIA',description:'Negocia ayuda y alianzas con tres civilizaciones de IA desde el mapa regional.',cost:{credits:460},rate:{},size:2,hp:800,color:'#b9c9e1'},
+ depot:{name:'Depósito de suministros',tag:'LOGÍSTICA',description:'Permite abrir rutas hacia otras regiones y añade 20 plazas de ejército por nivel, hasta 120.',cost:{credits:300},rate:{},size:2,hp:850,color:'#b7b383'},
+ dock:{name:'Astillero',tag:'ARMADA',description:'Construye lanchas y transportes. Permite abrir rutas marítimas hacia archipiélagos.',cost:{credits:550},rate:{},size:2,hp:1000,color:'#87c7d9'},
+});
+BUILDINGS.barracks.description='Entrena infantería, lanceros, arqueros y caballería. Mejora el mando para desbloquear las tropas arcanas. Cada nivel reduce los tiempos.';
 export const UNITS = {
   ranger: { name: 'Explorador', short: 'EXPLORADOR', description: 'Infantería versátil. Rápida y económica.', cost: { credits: 80 }, hp: 125, damage: 19, range: 1.9, speed: 1.5, time: 6, color: '#8de3ce' },
   bulwark: { name: 'Bastión', short: 'BASTIÓN', description: 'Blindado pesado. Resiste el fuego enemigo.', cost: { credits: 260 }, hp: 430, damage: 40, range: 2.7, speed: .72, time: 12, color: '#f0c77e' },
@@ -18,6 +32,18 @@ export const UNITS = {
   golem: { name: 'Guardián rúnico', short: 'GUARDIÁN RÚNICO', description: 'Gólem de piedra que resiste grandes impactos y prioriza las defensas de la fortaleza.', cost: { credits: 420 }, hp: 850, damage: 42, range: 1.4, speed: .52, time: 18, color: '#8ed4bf', requiredLevel: 2, preferDefences: true },
   drake: { name: 'Draco de bronce', short: 'DRACO DE BRONCE', description: 'Criatura de magia y metal. Su aliento de fuego alcanza a varios edificios cercanos.', cost: { credits: 560 }, hp: 390, damage: 58, range: 3.2, speed: 1.35, time: 22, color: '#e9a76a', requiredLevel: 3, splash: 2 },
 };
+Object.assign(UNITS, {
+ jeep:{name:'Jeep artillado',short:'JEEP',description:'Vehículo veloz para explorar y flanquear.',cost:{credits:170},hp:240,damage:25,range:3,speed:2.3,time:10,color:'#9dc083',facility:'garage',role:'VEHÍCULO'},
+ missile:{name:'Lanzamisiles',short:'LANZAMISILES',description:'Camión de artillería de gran alcance. Explosiones contra objetivos agrupados.',cost:{credits:480},hp:280,damage:90,range:6.5,speed:.8,time:20,color:'#e9c77a',facility:'garage',requiredLevel:2,splash:2.2,reload:2,role:'ARTILLERÍA'},
+ helicopter:{name:'Helicóptero',short:'HELICÓPTERO',description:'Apoyo aéreo. Sobrevuela agua y obstáculos para atacar.',cost:{credits:520},hp:360,damage:42,range:4,speed:2.1,time:21,color:'#99c6b6',facility:'airfield',flying:true,role:'AVIACIÓN'},
+ spearman:{name:'Lancero',short:'LANCERO',description:'Infantería histórica con escudo. Resiste más que un explorador.',cost:{credits:90},hp:210,damage:24,range:1.2,speed:1.3,time:7,color:'#85bfb9',role:'INFANTERÍA HISTÓRICA'},
+ archer:{name:'Arquera',short:'ARQUERA',description:'Arco de largo alcance. Mantén la distancia frente a los cañones.',cost:{credits:110},hp:110,damage:23,range:4.5,speed:1.45,time:8,color:'#afcb85',role:'ARQUERÍA'},
+ cavalry:{name:'Caballero',short:'CABALLERÍA',description:'Caballería de choque. Explora rápidamente y alcanza las líneas enemigas.',cost:{credits:220},hp:350,damage:35,range:1.4,speed:2.2,time:12,color:'#9eb5d2',role:'CABALLERÍA'},
+ gunboat:{name:'Lancha cañonera',short:'CAÑONERA',description:'Combate naval y bombardeo costero. Solo navega sobre agua.',cost:{credits:380},hp:550,damage:48,range:5,speed:1.8,time:16,color:'#7ec9df',facility:'dock',naval:true,role:'ARMADA'},
+ transport:{name:'Transporte naval',short:'DESEMBARCO',description:'Embarca hasta doce tropas cerca de la costa. Selecciona la nave para desembarcar.',cost:{credits:300},hp:700,damage:12,range:3,speed:1.5,time:15,color:'#94cace',facility:'dock',naval:true,role:'TRANSPORTE · 12 PLAZAS'},
+});
+UNITS.ranger.name='Comando';UNITS.ranger.short='COMANDO';UNITS.ranger.role='INFANTERÍA';
+UNITS.wasp.flying=true;UNITS.drake.flying=true;
 export const MISSIONS = [
   { name: 'Señal en el desierto', region: 'SECTOR 01 · LAS DUNAS', description: 'Una estación del Eclipse bloquea la ruta de suministros. Destruye su núcleo y abre el paso.', reward: { credits: 500, alloy: 200, energy: 90 }, turrets: 2, hp: 650 },
   { name: 'Ciudadela de cobre', region: 'SECTOR 02 · CLAN DEL HIERRO', description: 'Una fortaleza industrial llena de riquezas. Sus torres y guardianes exigen un ejército preparado.', reward: { credits: 2800, alloy: 1400, energy: 600 }, turrets: 4, hp: 2200 },
@@ -26,20 +52,20 @@ export const MISSIONS = [
 export const unitCount = army => Object.values(army).reduce((a,b)=>a+b,0);
 export const ready = (b, now) => (!b.readyAt || b.readyAt <= now) && b.hp !== 0;
 export function createGame(now = Date.now()) {
-  return { version: VERSION, createdAt: now, updatedAt: now, resources: { credits: 900, alloy: 420, energy: 240 }, xp: 0, campaign: 0, army: { ranger: 6, bulwark: 1, wasp: 1, arcanist: 0, golem: 0, drake: 0 }, jobs: [], buildings: [
+  return { version: VERSION, createdAt: now, updatedAt: now, resources: { credits: 900, alloy: 420, energy: 240 }, xp: 0, campaign: 0, army: Object.fromEntries(Object.keys(UNITS).map(k=>[k,k==='ranger'?6:['bulwark','wasp'].includes(k)?1:0])), jobs: [], buildings: [
     { id: 'hq', type: 'command', x: 7, y: 7, level: 1 },
     { id: 'mine-0', type: 'mine', x: 4, y: 7, level: 1 },
     { id: 'reactor-0', type: 'reactor', x: 7, y: 4, level: 1 },
     { id: 'barracks-0', type: 'barracks', x: 10, y: 7, level: 1 },
     { id: 'turret-0', type: 'turret', x: 6, y: 10, level: 1 },
   ].map(b=>({...b,hp:BUILDINGS[b.type].hp})), battle: null, history: [], tutorialSeen: false,
-    terrain: Array.from({length:GRID*GRID},(_,i)=>{const x=i%GRID,y=Math.floor(i/GRID);return {h:0,kind:(x<2||y<2||x>15||y>15)?'forest':'grass'};}),
-    offers: [], nextNpcAt: now+15000, npcSerial: 0, contracts: 0, raid: null, nextRaidAt:now+360000, raidsDefended:0 };
+    terrain: Array.from({length:GRID*GRID},(_,i)=>{const x=i%GRID,y=Math.floor(i/GRID);if(y>=20&&x<18)return{h:-1,kind:'water'};return {h:0,kind:(x<2||y<2||x>16||y>16)&&Math.sin(x*73+y*51)>.3?'forest':'grass'};}),
+    frontier:createFrontier(now%4294967295), tech:{weapons:0,armor:0,logistics:0}, garrison:[], offers: [], nextNpcAt: now+15000, npcSerial: 0, contracts: 0, raid: null, nextRaidAt:now+360000, raidsDefended:0 };
 }
 export function production(s, now = Date.now()) {
   const rate = { credits: 0, alloy: 0, energy: 0 };
   for (const b of s.buildings) if (ready(b, now)) for (const [k,v] of Object.entries(BUILDINGS[b.type].rate)) rate[k] += v*b.level;
-  return rate;
+  const extra=colonyRates(s);for(const k of Object.keys(rate))rate[k]+=extra[k];return rate;
 }
 export function advance(s, now = Date.now()) {
   const end = Math.max(now, s.updatedAt), start = Math.max(s.updatedAt, end - 14400000);
@@ -52,7 +78,7 @@ export function advance(s, now = Date.now()) {
   for (const j of completed) s.army[j.unit]++;
   s.jobs = s.jobs.filter(j=>j.readyAt>end);
   if(s.offers){s.offers=s.offers.filter(o=>o.expiresAt>end);if(end>=s.nextNpcAt&&s.offers.length<3){spawnNpc(s,end);s.nextNpcAt=end+75000;}}
-  s.updatedAt = end;
+  advanceFrontier(s,(end-start)/1000);syncGarrison(s);s.updatedAt = end;
   return completed.length;
 }
 export function affordable(s, cost) { return Object.entries(cost).every(([k,v])=>s.resources[k]>=v); }
@@ -68,7 +94,7 @@ export function build(s,type,x,y,now=Date.now()) {
   if(s.raid)return {ok:false,message:'Termina la incursión antes de construir.'};
   if (!canPlace(s,type,x,y)) return {ok:false,message:'Necesitas terreno libre, llano y sin bosque. Puedes reformarlo.'};
   if (!affordable(s,BUILDINGS[type].cost)) return {ok:false,message:'Todavía no tienes suficientes recursos.'};
-  if (s.buildings.length>=45) return {ok:false,message:'Has alcanzado el límite de 45 edificios.'};
+  if (s.buildings.length>=180) return {ok:false,message:'Has alcanzado el límite de 180 edificios.'};
   pay(s,BUILDINGS[type].cost);
   const id='b-'+now+'-'+s.buildings.length;
   s.buildings.push({id,type,x,y,level:1,hp:BUILDINGS[type].hp,readyAt:now+8000});s.xp+=15;
@@ -89,9 +115,9 @@ export function train(s,type,now=Date.now()) {
   if (!UNITS[type]) return {ok:false,message:'Unidad desconocida.'};
   const hq=s.buildings.find(b=>b.type==='command');
   if((hq?.level||1)<(UNITS[type].requiredLevel||1))return {ok:false,message:'Mejora el centro de mando al nivel '+UNITS[type].requiredLevel+' para desbloquear esta tropa.'};
-  const barracks=s.buildings.filter(b=>b.type==='barracks'&&ready(b,now));
-  if (!barracks.length) return {ok:false,message:'Necesitas un cuartel terminado.'};
-  if (unitCount(s.army)+s.jobs.length+(s.battle?unitCount(s.battle.reserve)+s.battle.units.filter(u=>u.hp>0).length:0)>=60) return {ok:false,message:'El límite de población es de 60 unidades.'};
+  const facility=UNITS[type].facility||'barracks',barracks=s.buildings.filter(b=>b.type===facility&&ready(b,now));
+  if (!barracks.length) return {ok:false,message:'Necesitas '+BUILDINGS[facility].name+' terminado.'};
+  if (unitCount(s.army)+s.jobs.length+(s.battle?unitCount(s.battle.reserve)+s.battle.units.filter(u=>u.hp>0).length:0)>=capacity(s)) return {ok:false,message:'La población está llena. Construye o mejora un depósito de suministros.'};
   if (s.jobs.length>=8) return {ok:false,message:'La cola de entrenamiento está llena (8).'};
   if (!affordable(s,UNITS[type].cost)) return {ok:false,message:'Todavía no tienes suficientes recursos.'};
   pay(s,UNITS[type].cost);
@@ -112,7 +138,7 @@ export function startBattle(s,index,now=Date.now()) {
   const outposts=[{type:'mine',x:13.4,y:12.5},{type:'refinery',x:14.5,y:7.5},{type:'barracks',x:10.2,y:3.2}];
   for(const [i,b]of outposts.slice(0,2+Math.min(index,1)).entries())enemies.push({...b,id:'outpost-'+i,hp:240+index*140,maxHp:240+index*140,cooldown:0});
   const bonus=s.buildings.filter(b=>b.type==='turret'&&ready(b,now)).reduce((a,b)=>a+b.level*.04,0);
-  s.battle={mission:index,reserve:Object.fromEntries(Object.keys(UNITS).map(k=>[k,s.army[k]||0])),units:[],enemies,elapsed:0,bonus:Math.min(bonus,.4),rally:{x:9,y:8},outcome:null};
+  s.garrison=[];s.battle={mission:index,reserve:Object.fromEntries(Object.keys(UNITS).map(k=>[k,s.army[k]||0])),units:[],enemies,elapsed:0,bonus:Math.min(bonus,.4),rally:{x:9,y:8},outcome:null};
   s.army=Object.fromEntries(Object.keys(UNITS).map(k=>[k,0]));
   return {ok:true,message:'Despliega tus tropas en la zona azul.'};
 }
@@ -121,67 +147,59 @@ export function deploy(s,type,x,y) {
   if(!b||b.outcome||!UNITS[type]||!b.reserve[type])return {ok:false,message:'No quedan unidades de este tipo en reserva.'};
   if(!Number.isFinite(x)||!Number.isFinite(y)||x<1||x>5.5||y<2||y>15) return {ok:false,message:'Toca la zona azul a la izquierda para desplegar.'};
   b.reserve[type]--;
-  b.units.push({id:'u-'+b.units.length,type,x,y,hp:UNITS[type].hp,maxHp:UNITS[type].hp,cooldown:0});
+  if(b.map){const tile=b.map.terrain[Math.floor(y)*b.map.size+Math.floor(x)];if(!!UNITS[type].naval!==(tile.kind==='water')&&!UNITS[type].flying){b.reserve[type]++;return {ok:false,message:UNITS[type].naval?'Despliega la nave en el agua azul (parte inferior).':'Despliega la tropa en la tierra azul (parte superior).'};}}
+  const hp=UNITS[type].hp*(1+(s.tech?.armor||0)*.15);b.units.push({id:'u-'+b.units.length,type,x,y,hp,maxHp:hp,cooldown:0});
   return {ok:true,message:UNITS[type].name+' desplegado.'};
 }
 export function battleStep(s,dt) {
   const b=s.battle;if(!b||b.outcome)return [];
   dt=Math.min(.1,Math.max(0,dt));b.elapsed+=dt;
-  const shots=[];
-  for(const u of b.units) {
-    if(u.hp<=0)continue;
-    const spec=UNITS[u.type];
-    let targets=b.enemies.filter(e=>e.hp>0);if(!targets.length)break;
-    if(spec.preferDefences&&targets.some(e=>e.type==='turret'))targets=targets.filter(e=>e.type==='turret');
-    targets.sort((a,c)=>Math.hypot(u.x-a.x,u.y-a.y)-Math.hypot(u.x-c.x,u.y-c.y));
-    const e=targets[0],dist=Math.hypot(e.x-u.x,e.y-u.y);
-    u.cooldown=Math.max(0,u.cooldown-dt);
-    if(dist>spec.range) {u.x+=(e.x-u.x)/dist*spec.speed*dt;u.y+=(e.y-u.y)/dist*spec.speed*dt;}
-    else if(u.cooldown<=0) {
-      const damage=spec.damage*(1+b.bonus);e.hp=Math.max(0,e.hp-damage);
-      if(spec.splash)for(const other of b.enemies)if(other!==e&&other.hp>0&&Math.hypot(other.x-e.x,other.y-e.y)<=spec.splash)other.hp=Math.max(0,other.hp-damage*.55);
-      u.cooldown=.75;shots.push({x:u.x,y:u.y,tx:e.x,ty:e.y,enemy:false,kind:u.type});
-    }
-  }
+  environmentalStep(s,dt);const shots=[...tacticalStep(s,dt),...enemyFieldStep(s,dt)];
   for(const e of b.enemies) {
     if(e.hp<=0||e.type!=='turret')continue;
     e.cooldown=Math.max(0,e.cooldown-dt);
-    const targets=b.units.filter(u=>u.hp>0&&Math.hypot(u.x-e.x,u.y-e.y)<4.6);
+    const targets=b.units.filter(u=>u.hp>0&&!u.embarked&&Math.hypot(u.x-e.x,u.y-e.y)<4.6);
     targets.sort((a,c)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(c.x-e.x,c.y-e.y));
     if(targets.length&&e.cooldown<=0){const u=targets[0];u.hp=Math.max(0,u.hp-(15+b.mission*15));e.cooldown=.95;shots.push({x:e.x,y:e.y,tx:u.x,ty:u.y,enemy:true});}
   }
   if(b.enemies.every(e=>e.hp<=0))b.outcome='victory';
-  else if(b.elapsed>=180||(!unitCount(b.reserve)&&!b.units.some(u=>u.hp>0)))b.outcome='defeat';
+  else if(b.elapsed>=(b.map?1200:180)||(!unitCount(b.reserve)&&!b.units.some(u=>u.hp>0)))b.outcome='defeat';
   return shots;
 }
 export function finishBattle(s,retreat=false) {
   const b=s.battle;
   if(!b||(!retreat&&!b.outcome))return {ok:false,message:'La operación continúa.'};
   for(const type of Object.keys(UNITS))s.army[type]+=b.reserve[type]+b.units.filter(u=>u.type===type&&u.hp>0).length;
-  const victory=!retreat&&b.outcome==='victory',first=victory&&b.mission===s.campaign;
-  const reward=Object.fromEntries(Object.entries(MISSIONS[b.mission].reward).map(([k,v])=>[k,Math.floor(v*(first?1:.35))]));
-  if(victory){for(const [k,v]of Object.entries(reward))s.resources[k]=Math.min(999999,s.resources[k]+v);s.xp+=first?150:40;if(first)s.campaign++;}
+  const victory=!retreat&&b.outcome==='victory',first=victory&&(b.regionId!==undefined||b.mission===s.campaign);
+  const reward=Object.fromEntries(Object.entries((b.regionId!==undefined?regionInfo(s,b.regionId):MISSIONS[b.mission]).reward).map(([k,v])=>[k,Math.floor(v*(first?1:.35))]));
+  if(victory){for(const [k,v]of Object.entries(reward))s.resources[k]=Math.min(999999,s.resources[k]+v);s.xp+=first?150:40;if(b.regionId!==undefined)conquer(s,b.regionId);else if(first)s.campaign++;}
   const result={ok:true,victory,reward:victory?reward:null,survivors:unitCount(s.army),lost:b.units.filter(u=>u.hp<=0).length,message:victory?'Sector recuperado. Los supervivientes han vuelto a la base.':retreat?'Retirada completada. Las unidades supervivientes y las reservas vuelven a la base.':'Operación fallida. Las unidades supervivientes y las reservas vuelven a la base.'};
+  const hospital=s.buildings.filter(v=>v.type==='hospital'&&ready(v,Date.now())).reduce((n,v)=>Math.max(n,v.level),0),fallen=b.units.filter(u=>u.hp<=0),rescued=fallen.slice(0,Math.floor(fallen.length*Math.min(.75,hospital*.25)));for(const u of rescued)s.army[u.type]++;
   s.history.unshift({mission:b.mission,victory,lost:result.lost,at:Date.now()});s.history=s.history.slice(0,10);s.battle=null;
   if(victory)s.nextRaidAt=Math.min(s.nextRaidAt,Date.now()+90000);
   return result;
 }
 export function readSave(raw,now=Date.now()) {
-  let s;try{s=JSON.parse(typeof raw==='string'?raw:JSON.stringify(raw));}catch{return null;}
+  let s;try{s=JSON.parse(typeof raw==='string'?raw:JSON.stringify(raw));}catch{return null;}if(!s||typeof s!=='object'||Array.isArray(s))return null;
   // Old 0.1.0 saves keep their base, army and in-progress battles when the roster grows.
-  for(const type of ['arcanist','golem','drake']){
+  for(const type of Object.keys(UNITS).filter(k=>!['ranger','bulwark','wasp'].includes(k))){
     if(s?.army&&typeof s.army==='object'&&!Object.hasOwn(s.army,type))s.army[type]=0;
     if(s?.battle?.reserve&&typeof s.battle.reserve==='object'&&!Object.hasOwn(s.battle.reserve,type))s.battle.reserve[type]=0;
   }
+  if(s&&Array.isArray(s.terrain)&&s.terrain.length===324){const old=s.terrain;s.terrain=createGame(now).terrain;for(let y=0;y<18;y++)for(let x=0;x<18;x++)s.terrain[y*GRID+x]=old[y*18+x];}
+  if(s&&!s.frontier)s.frontier=createFrontier((s.createdAt||now)%4294967295);
+  if(s?.frontier&&!s.frontier.minerals)s.frontier.minerals=[0,0,0,0,0,0];
+  if(s&&!s.tech)s.tech={weapons:0,armor:0,logistics:0};
+  if(s){s.garrison??=[];if(!Array.isArray(s.garrison)||s.garrison.length>120||s.garrison.some(u=>!Object.hasOwn(UNITS,u.type)||typeof u.id!=='string'||u.id.length>80||!Number.isFinite(u.x)||!Number.isFinite(u.y)||u.x<0||u.y<0||u.x>48||u.y>48||!Number.isFinite(u.hp)||u.hp<0||u.hp>5000||!Number.isFinite(u.maxHp)||u.maxHp<1||u.maxHp>5000))return null;for(const u of s.garrison){delete u.path;delete u.pathTarget;if(u.order&&(!['hold','auto','move','attack','attackMove'].includes(u.order.kind)||!['hold','auto'].includes(u.order.kind)&&(!Number.isFinite(u.order.x)||!Number.isFinite(u.order.y)||u.order.x<0||u.order.y<0||u.order.x>48||u.order.y>48)))return null;}if(!validFrontier(s.frontier)||!['weapons','armor','logistics'].every(k=>Number.isInteger(s.tech[k])&&s.tech[k]>=0&&s.tech[k]<=3))return null;}
   const finite=(n,min,max)=>typeof n==='number'&&Number.isFinite(n)&&n>=min&&n<=max;
   const integer=(n,min,max)=>Number.isInteger(n)&&finite(n,min,max);
   if(!s||s.version!==VERSION||!finite(s.createdAt,0,now+86400000)||!finite(s.updatedAt,0,now+86400000)||!integer(s.campaign,0,3)||!finite(s.xp,0,1e9))return null;
   if(!s.resources||!['credits','alloy','energy'].every(k=>finite(s.resources[k],0,999999)))return null;
-  if(!s.army||!Object.keys(s.army).every(k=>Object.hasOwn(UNITS,k))||!Object.keys(UNITS).every(k=>integer(s.army[k],0,60))||unitCount(s.army)>60)return null;
-  if(!Array.isArray(s.buildings)||s.buildings.length<1||s.buildings.length>45)return null;
+  if(!s.army||!Object.keys(s.army).every(k=>Object.hasOwn(UNITS,k))||!Object.keys(UNITS).every(k=>integer(s.army[k],0,120))||unitCount(s.army)>120)return null;
+  if(!Array.isArray(s.buildings)||s.buildings.length<1||s.buildings.length>180)return null;
   const occupied=new Set(),ids=new Set();
   for(const b of s.buildings){
-    if(!Object.hasOwn(BUILDINGS,b.type)||typeof b.id!=='string'||b.id.length>80||ids.has(b.id)||!integer(b.level,1,5)||!integer(b.x,1,16)||!integer(b.y,1,16)||b.x+BUILDINGS[b.type].size>=GRID||b.y+BUILDINGS[b.type].size>=GRID)return null;
+    if(!Object.hasOwn(BUILDINGS,b.type)||typeof b.id!=='string'||b.id.length>80||ids.has(b.id)||!integer(b.level,1,5)||!integer(b.x,1,GRID-2)||!integer(b.y,1,GRID-2)||b.x+BUILDINGS[b.type].size>=GRID||b.y+BUILDINGS[b.type].size>=GRID)return null;
     if(b.readyAt!==undefined&&!finite(b.readyAt,0,now+86400000))return null;
     if(b.nextLevel!==undefined&&(!integer(b.nextLevel,2,5)||b.nextLevel!==b.level+1||!b.readyAt))return null;
     ids.add(b.id);
@@ -192,17 +210,21 @@ export function readSave(raw,now=Date.now()) {
   if(!Array.isArray(s.terrain)||s.terrain.length!==GRID*GRID||s.terrain.some(t=>!t||!integer(t.h,-1,3)||!['grass','forest','water','path'].includes(t.kind)))return null;
   if(!finite(s.nextNpcAt,0,now+86400000)||!finite(s.nextRaidAt,0,now+86400000)||!integer(s.npcSerial,0,1e9)||!integer(s.contracts,0,1e9)||!integer(s.raidsDefended,0,1e9))return null;
   if(!Array.isArray(s.offers)||s.offers.length>3||s.offers.some(o=>!integer(o.id,0,1e9)||!integer(o.kind,0,2)||!['alloy','energy'].includes(o.resource)||!integer(o.amount,1,10000)||!integer(o.reward,1,100000)||!finite(o.expiresAt,0,now+86400000)))return null;
-  if(s.raid){const r=s.raid;if(!finite(r.elapsed,0,181)||![null,'victory','defeat'].includes(r.outcome)||!Array.isArray(r.units)||r.units.length>20||r.units.some(u=>!finite(u.x,0,18)||!finite(u.y,0,18)||!finite(u.hp,0,2000)||!finite(u.maxHp,1,2000)||u.hp>u.maxHp||!finite(u.cooldown,-1,5)))return null;}
+  if(s.raid){const r=s.raid;if(!finite(r.elapsed,0,181)||![null,'victory','defeat'].includes(r.outcome)||!Array.isArray(r.units)||r.units.length>20||r.units.some(u=>!finite(u.x,0,GRID)||!finite(u.y,0,GRID)||!finite(u.hp,0,2000)||!finite(u.maxHp,1,2000)||u.hp>u.maxHp||!finite(u.cooldown,-1,5)))return null;}
   if(!Array.isArray(s.jobs)||s.jobs.length>8||s.jobs.some(j=>!Object.hasOwn(UNITS,j.unit)||!finite(j.readyAt,0,now+86400000)))return null;
   if(s.battle){
     if(s.raid)return null;
     const b=s.battle;
-    if(!integer(b.mission,0,2)||b.mission>s.campaign||!finite(b.elapsed,0,181)||!finite(b.bonus,0,.4)||![null,'victory','defeat'].includes(b.outcome)||!b.reserve||!Object.keys(b.reserve).every(k=>Object.hasOwn(UNITS,k))||!Object.keys(UNITS).every(k=>integer(b.reserve[k],0,60)))return null;
-    if(!Array.isArray(b.units)||b.units.length>60||!Array.isArray(b.enemies)||b.enemies.length<MISSIONS[b.mission].turrets+1||b.enemies.length>MISSIONS[b.mission].turrets+4)return null;
-    const entity=e=>finite(e.x,0,18)&&finite(e.y,0,18)&&finite(e.hp,0,10000)&&finite(e.maxHp,1,10000)&&e.hp<=e.maxHp&&finite(e.cooldown,-1,5);
-    if(b.units.some(u=>!Object.hasOwn(UNITS,u.type)||!entity(u))||b.enemies.some(e=>!['core','turret','mine','refinery','barracks'].includes(e.type)||!entity(e))||b.enemies.filter(e=>e.type==='core').length!==1)return null;
-    if(unitCount(s.army)+s.jobs.length+unitCount(b.reserve)+b.units.filter(u=>u.hp>0).length>60)return null;
-  } else if(unitCount(s.army)+s.jobs.length>60)return null;
+    if(b.map&&(!validMap(b.map)||!integer(b.regionId,0,23)||s.frontier.regions[b.regionId].status!=='open'||!finite(b.supply,0,100)||!finite(b.nextDisaster,0,1300)))return null;
+    if(b.disaster&&(!b.map||typeof b.disaster.name!=='string'||b.disaster.name.length>60||!finite(b.disaster.x,0,40)||!finite(b.disaster.y,0,40)||!finite(b.disaster.radius,1,8)||!finite(b.disaster.starts,0,1300)||!finite(b.disaster.until,0,1300)))return null;
+    if(!integer(b.mission,0,2)||b.mission>s.campaign||!finite(b.elapsed,0,b.map?1201:181)||!finite(b.bonus,0,.4)||![null,'victory','defeat'].includes(b.outcome)||!b.reserve||!Object.keys(b.reserve).every(k=>Object.hasOwn(UNITS,k))||!Object.keys(UNITS).every(k=>integer(b.reserve[k],0,120)))return null;
+    if(!Array.isArray(b.units)||b.units.length>120||!Array.isArray(b.enemies)||b.enemies.length<MISSIONS[b.mission].turrets+1||b.enemies.length>(b.map?13:MISSIONS[b.mission].turrets+4))return null;
+    const entity=e=>finite(e.x,0,b.map?40:18)&&finite(e.y,0,b.map?40:18)&&finite(e.hp,0,10000)&&finite(e.maxHp,1,10000)&&e.hp<=e.maxHp&&finite(e.cooldown,-1,5);
+    const unitIds=new Set();for(const u of b.units){if(typeof u.id!=='string'||u.id.length>80||unitIds.has(u.id))return null;unitIds.add(u.id);if(u.order&&(!['move','attack','attackMove','hold','auto'].includes(u.order.kind)||(!['hold','auto'].includes(u.order.kind)&&(!finite(u.order.x,0,48)||!finite(u.order.y,0,48)))))return null;delete u.path;delete u.pathTarget;}
+    if(b.units.some(u=>u.embarked&&(!b.units.some(v=>v.id===u.embarked&&v.type==='transport')||UNITS[u.type]?.naval||UNITS[u.type]?.flying)))return null;
+    if(b.units.some(u=>!Object.hasOwn(UNITS,u.type)||!entity(u))||b.enemies.some(e=>!['core','turret','mine','refinery','barracks',...Object.keys(UNITS)].includes(e.type)||!entity(e))||b.enemies.filter(e=>e.type==='core').length!==1)return null;
+    if(unitCount(s.army)+s.jobs.length+unitCount(b.reserve)+b.units.filter(u=>u.hp>0).length>120)return null;
+  } else if(unitCount(s.army)+s.jobs.length>120)return null;
   // Strip unrelated JSON properties before the save enters the application.
   const clean=JSON.parse(JSON.stringify(s));clean.history=Array.isArray(s.history)?s.history.slice(0,10).filter(h=>integer(h.mission,0,2)&&typeof h.victory==='boolean'&&integer(h.lost,0,60)&&finite(h.at,0,now+86400000)):[];
   clean.tutorialSeen=!!s.tutorialSeen;
@@ -221,16 +243,16 @@ export function spawnNpc(s,now=Date.now()){
 export function fulfill(s,id,now=Date.now()){
   const offer=s.offers.find(o=>o.id===id);if(!offer||offer.expiresAt<now)return {ok:false,message:'Este encargo ya no está disponible.'};
   if(s.resources[offer.resource]<offer.amount)return {ok:false,message:'Todavía no tienes los recursos que necesita.'};
-  s.resources[offer.resource]-=offer.amount;s.resources.credits=Math.min(999999,s.resources.credits+offer.reward);s.contracts++;s.xp+=40;s.offers=s.offers.filter(o=>o.id!==id);
+  s.resources[offer.resource]-=offer.amount;s.resources.credits=Math.min(999999,s.resources.credits+offer.reward*(1+s.buildings.filter(b=>b.type==='market'&&ready(b,now)).reduce((n,b)=>Math.max(n,b.level),0)*.2));s.contracts++;s.xp+=40;s.offers=s.offers.filter(o=>o.id!==id);
   return {ok:true,message:'Encargo completado. Has recibido '+offer.reward+' áureos.'};
 }
 export function trade(s,resource){
   if(!['alloy','energy'].includes(resource)||s.resources[resource]<50)return {ok:false,message:'Necesitas al menos 50 unidades para vender.'};
-  s.resources[resource]-=50;s.resources.credits=Math.min(999999,s.resources.credits+75);return {ok:true,message:'Has vendido 50 unidades por 75 áureos.'};
+  s.resources[resource]-=50;s.resources.credits=Math.min(999999,s.resources.credits+75*(1+s.buildings.filter(b=>b.type==='market'&&ready(b,Date.now())).reduce((n,b)=>Math.max(n,b.level),0)*.2));return {ok:true,message:'Has vendido 50 unidades por 75 áureos.'};
 }
 export function reform(s,tool,x,y){
   if(s.raid||s.battle)return {ok:false,message:'No puedes reformar el terreno durante un combate.'};
-  if(!Number.isInteger(x)||!Number.isInteger(y)||x<1||y<1||x>=17||y>=17)return {ok:false,message:'Elige una casilla dentro del territorio.'};
+  if(!Number.isInteger(x)||!Number.isInteger(y)||x<1||y<1||x>=GRID-1||y>=GRID-1)return {ok:false,message:'Elige una casilla dentro del territorio.'};
   if(s.buildings.some(b=>x>=b.x&&x<b.x+BUILDINGS[b.type].size&&y>=b.y&&y<b.y+BUILDINGS[b.type].size))return {ok:false,message:'Mueve primero el edificio que ocupa esta casilla.'};
   const t=s.terrain[y*GRID+x],next={...t};
   if(tool==='flatten'){next.h=0;next.kind='grass';}
@@ -279,6 +301,8 @@ export function raidStep(s,dt){
   const shots=[],living=s.buildings.filter(b=>b.hp>0&&!b.readyAt);
   for(const u of r.units){
     if(u.hp<=0)continue;u.cooldown=Math.max(0,u.cooldown-dt);
+    const defender=(s.garrison||[]).filter(v=>v.hp>0&&Math.hypot(v.x-u.x,v.y-u.y)<2.2).sort((a,b)=>Math.hypot(a.x-u.x,a.y-u.y)-Math.hypot(b.x-u.x,b.y-u.y))[0];
+    if(defender){if(u.cooldown<=0){defender.hp=Math.max(0,defender.hp-(16+s.campaign*6));u.cooldown=1;shots.push({x:u.x,y:u.y,tx:defender.x,ty:defender.y,enemy:true});}continue;}
     const targets=[...living].sort((a,b)=>Math.hypot(a.x+.5-u.x,a.y+.5-u.y)-Math.hypot(b.x+.5-u.x,b.y+.5-u.y));
     const b=targets[0];if(!b)break;
     const tx=b.x+BUILDINGS[b.type].size/2,ty=b.y+BUILDINGS[b.type].size/2,d=Math.hypot(tx-u.x,ty-u.y);
@@ -286,11 +310,12 @@ export function raidStep(s,dt){
     else if(u.cooldown<=0){b.hp=Math.max(0,b.hp-(20+s.campaign*10));u.cooldown=1;shots.push({x:u.x,y:u.y,tx,ty,enemy:true});}
   }
   // Towers and sanctuaries fire automatically. The garrison contributes to defence.
-  for(const b of living.filter(b=>['turret','sanctum','command'].includes(b.type))){
-    b.cooldown=Math.max(0,(b.cooldown||0)-dt);const range=b.type==='sanctum'?6:4.5,targets=r.units.filter(u=>u.hp>0&&Math.hypot(u.x-b.x,u.y-b.y)<range);
+  for(const b of living.filter(b=>['turret','sanctum','command','battery'].includes(b.type))){
+    b.cooldown=Math.max(0,(b.cooldown||0)-dt);const range=b.type==='battery'?9:b.type==='sanctum'?6:4.5,targets=r.units.filter(u=>u.hp>0&&Math.hypot(u.x-b.x,u.y-b.y)<range);
     targets.sort((a,c)=>Math.hypot(a.x-b.x,a.y-b.y)-Math.hypot(c.x-b.x,c.y-b.y));
-    if(targets.length&&b.cooldown<=0){const u=targets[0],garrison=b.type==='command'?Math.min(25,unitCount(s.army)*2):0;u.hp=Math.max(0,u.hp-(b.type==='command'?10+garrison:b.type==='sanctum'?38:26)*b.level);b.cooldown=.8;shots.push({x:b.x+.5,y:b.y+.5,tx:u.x,ty:u.y,enemy:false});}
+    if(targets.length&&b.cooldown<=0){const u=targets[0],garrison=b.type==='command'?Math.min(25,unitCount(s.army)*2):0;u.hp=Math.max(0,u.hp-(b.type==='command'?10+garrison:b.type==='battery'?75:b.type==='sanctum'?38:26)*b.level);b.cooldown=.8;shots.push({x:b.x+.5,y:b.y+.5,tx:u.x,ty:u.y,enemy:false});}
   }
+  shots.push(...tacticalStep(s,dt,true));
   if(r.units.every(u=>u.hp<=0))r.outcome='victory';
   else if(r.elapsed>=180||!s.buildings.find(b=>b.type==='command').hp)r.outcome='defeat';
   return shots;
@@ -310,6 +335,9 @@ export function finishRaid(s){
   const victory=s.raid.outcome==='victory';let lost=0;
   if(victory){s.raidsDefended++;s.resources.credits=Math.min(999999,s.resources.credits+150);s.xp+=80;}
   else{lost=Math.floor(s.resources.credits*.15);s.resources.credits-=lost;}
+  for(const u of s.garrison||[])if(u.hp<=0)s.army[u.type]=Math.max(0,s.army[u.type]-1);s.garrison=(s.garrison||[]).filter(u=>u.hp>0);
   s.raid=null;s.nextRaidAt=Date.now()+420000;
   return {victory,lost,message:victory?'¡Incursión repelida! +150 áureos.':'El enemigo ha saqueado '+lost+' áureos. Repara tu base y refuerza las defensas.'};
 }
+
+export function research(s,type){if(!['weapons','armor','logistics'].includes(type))return{ok:false,message:'Investigación desconocida.'};const lab=s.buildings.find(b=>b.type==='lab'&&ready(b,Date.now()));if(!lab)return{ok:false,message:'Construye un laboratorio.'};const n=s.tech[type];if(n>=3||n>=lab.level)return{ok:false,message:'Mejora el laboratorio para investigar el siguiente nivel (máximo 3).'};const cost=400*(n+1);if(s.resources.credits<cost)return{ok:false,message:'Necesitas '+cost+' áureos.'};s.resources.credits-=cost;s.tech[type]++;return{ok:true,message:'Investigación completada: '+type+' nivel '+s.tech[type]+'.'};}

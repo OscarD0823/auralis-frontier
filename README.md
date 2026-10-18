@@ -6,18 +6,22 @@ Juego original de estrategia y gestión del ecosistema Auralis. Combina una base
 
 **Android y Windows:** https://github.com/OscarD0823/auralis-frontier/releases/latest
 
-## Qué incluye esta alpha
+## Qué incluye la alpha 0.3
 
-- Centro de mando y siete edificios construibles: extractor, reactor de éter, cuartel, refinería, centinela, santuario y muralla. Mejoras hasta nivel 5, reubicación y reparación.
-- Áureos como única moneda de compra; producción de aleación y éter, mercado y encargos pagados de tres NPC.
-- Seis unidades: explorador, Bastión, Avispa arcana, Maga de éter, Guardián rúnico y Draco de bronce. Las tres últimas se desbloquean mejorando el mando. Entrenamiento secuencial y límite de 60 unidades; daño de área y preferencia por defensas según la clase.
-- Ocho edificios ilustrados y 24 poses de tropas: reposo, marcha y ataque. Materiales, banderas, cristales, mejoras visibles, bosque y una isla más colorida. Recursos y prompts originales en [ARTWORK.md](ARTWORK.md).
-- Tres fortalezas de dificultad creciente y grandes reservas, con defensas, mando y edificios de producción destructibles. Despliegue táctil, combate simulado, pérdidas, supervivientes, recompensas y repetición con botín reducido.
-- Incursiones de IA contra tu propia base. Las torres, los santuarios y la guarnición defienden automáticamente; los enemigos dañan edificios y pueden saquear el 15% de los áureos.
-- Terreno modificable por casilla: allanar, elevar, excavar hasta crear agua, plantar bosques y trazar caminos. Los edificios requieren superficies planas y despejadas. El terreno influye en las rutas de invasión y siempre debe quedar un acceso terrestre al mando.
-- Ratón, teclado y pantalla táctil; desplazamiento y zoom con dos dedos. Interfaz en español adaptable desde 320 px.
-- Guardado automático, exportación e importación validadas. En Android la copia se guarda mediante el menú de compartir del sistema.
-- PWA instalable y con caché sin conexión; aplicaciones Android y Windows con contenido incluido.
+- Base de 48 × 48 casillas (antes 18 × 18), hasta 180 edificios y terreno modificable; minimapa, zoom y desplazamiento.
+- 17 tipos de edificio con funciones: mando, extractor, reactor, cuartel, refinería, torre, santuario, muralla, fábrica de vehículos, hangar, batería de misiles, laboratorio, hospital, mercado, embajada, depósito y astillero. Mejoras, reparación y reubicación.
+- 14 clases: comando, tanque Bastión, dron Avispa, maga, gólem, draco, jeep, lanzamisiles, helicóptero, lancero, arquera, caballero, cañonera y transporte. Instalaciones especializadas, tecnologías, límite inicial 60 ampliable a 120.
+- Control directo del ejército en la base y las expediciones: clic, recuadro, doble clic por clase, Shift para añadir, Ctrl + 1–9 para guardar grupos y 1–9 para recuperarlos. Clic derecho para mover o atacar; A + clic avanza y ataca, S mantiene posición. Formaciones de línea y columna. En móvil, selección y órdenes mediante botones y toques.
+- 24 regiones procedurales de 40 × 40, generadas de forma determinista a partir de una semilla y conservadas en la partida. Praderas, desiertos, tundra, archipiélagos, zonas volcánicas y selvas. Lagos, bosques, alturas, yacimientos y emplazamientos distintos.
+- Niebla de exploración persistente durante cada expedición: el ejército descubre terreno y enemigos. La IA utiliza defensas y tropas de distintas civilizaciones.
+- Rutas terrestres o marítimas desde Aurora o una colonia. Requieren depósito y, en el mar, astillero. Consumen aleación durante la expedición; sin suministros las tropas se mueven más despacio. Las rutas deben mantener una conexión activa con Aurora.
+- Conquista, fundación y crecimiento de colonias mineras, comerciales o fortalezas. Construye infraestructuras en hasta 20 solares, consulta su vista isométrica y recibe sus exportaciones en la base inicial. Los edificios productivos, comerciales y de protección modifican los envíos.
+- Tres civilizaciones de IA con relaciones, ayuda diplomática y alianzas. Los pactos aportan daño, comercio o logística. Seis minerales comerciables: hierro, cobre, cobalto, cristal marino, obsidiana y esmeralda.
+- Combate naval con cañoneras y transportes de 12 plazas. Las tropas terrestres no cruzan el mar: hay que embarcarlas, navegar hasta la costa y desembarcar. Los helicópteros y criaturas voladoras pueden sobrevolarlo.
+- Desastres según el bioma: incendio, tormenta de arena, ventisca, temporal, erupción e inundación. Se anuncian 8 segundos antes y dañan unidades y objetivos dentro de la zona señalada.
+- Tres operaciones guiadas, incursiones contra Aurora, encargos de NPC y áureos como moneda de compra.
+- Ilustraciones originales con poses de reposo, marcha y ataque. Fuentes y prompts en [ARTWORK.md](ARTWORK.md) y [ARTWORK-v3.md](ARTWORK-v3.md).
+- Web/PWA sin conexión, Android y Windows con contenido incluido. Guardado, exportación e importación validadas entre plataformas.
 
 ## Funcionamiento del guardado y de la IA
 
@@ -25,7 +29,7 @@ Es una alpha para un jugador. La IA usa reglas de combate y búsqueda de rutas e
 
 Cada instalación guarda una colonia propia. Para continuar en otra plataforma, exporta la partida e impórtala allí. Todavía no incluye cuentas Auralis, sincronización automática, multijugador, clanes, compras reales ni batallas entre jugadores.
 
-La versión 0.2 conserva las partidas de 0.1.0, incluyendo los combates en curso. Añade las clases nuevas con cero unidades iniciales. Actualiza ambas aplicaciones antes de trasladar una partida que ya contenga tropas nuevas.
+La versión 0.3 conserva las partidas de 0.1 y 0.2: amplía el terreno conservando las casillas y coordenadas anteriores y añade las clases y sistemas nuevos. Actualiza todas las aplicaciones antes de trasladar una partida de 0.3 a otro dispositivo. Las colonias se administran desde el mapa regional; la construcción libre por casilla se realiza en Aurora. Las alianzas son con facciones locales de IA, sin multijugador. Los desastres afectan las expediciones visibles; no se simulan al cerrar el juego.
 
 ## Ejecutar y comprobar
 

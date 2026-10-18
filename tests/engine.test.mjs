@@ -8,7 +8,7 @@ test('production is capped at four offline hours and save round trips',()=>{
 test('construction only spends coins on valid, flat, unoccupied ground',()=>{
   const s=E.createGame(now),before=s.resources.credits;assert.equal(E.build(s,'mine',7,7,now).ok,false);assert.equal(s.resources.credits,before);
   assert.equal(E.build(s,'mine',3,3,now).ok,true);assert.equal(s.resources.credits,before-180);assert.equal(E.production(s,now).alloy,1.2);E.advance(s,now+9000);assert.equal(E.production(s,now+9000).alloy,2.4);
-  s.terrain[12*18+12].h=1;assert.equal(E.canPlace(s,'mine',12,12),false);
+  s.terrain[12*E.GRID+12].h=1;assert.equal(E.canPlace(s,'mine',12,12),false);
 });
 test('training queue delivers each unit once and enforces capacity',()=>{
   const s=E.createGame(now);assert.equal(E.train(s,'ranger',now).ok,true);E.advance(s,now+6000);assert.equal(s.army.ranger,7);E.advance(s,now+12000);assert.equal(s.army.ranger,7);
@@ -16,7 +16,7 @@ test('training queue delivers each unit once and enforces capacity',()=>{
 });
 test('terrain tools charge coins, preserve buildings, and affect buildability',()=>{
   const s=E.createGame(now),coins=s.resources.credits;assert.equal(E.reform(s,'raise',7,7).ok,false);assert.equal(s.resources.credits,coins);
-  assert.equal(E.reform(s,'lower',3,3).ok,true);assert.equal(s.terrain[3*18+3].kind,'water');assert.equal(E.canPlace(s,'mine',3,3),false);
+  assert.equal(E.reform(s,'lower',3,3).ok,true);assert.equal(s.terrain[3*E.GRID+3].kind,'water');assert.equal(E.canPlace(s,'mine',3,3),false);
   assert.equal(E.reform(s,'flatten',3,3).ok,true);assert.equal(E.canPlace(s,'mine',3,3),true);assert.equal(s.resources.credits,coins-50);
 });
 test('NPC requests and market exchanges cannot pay twice or overspend',()=>{

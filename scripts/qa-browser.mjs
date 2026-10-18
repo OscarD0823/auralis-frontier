@@ -20,7 +20,7 @@ try{
   await page.screenshot({path:'artifacts/army-desktop.png'});
   await seed('E.spawnNpc(s);');await page.locator('[data-view="village"]').click();const coins=(await read()).resources.credits;await page.locator('[data-action="fulfill"]').click();assert.equal((await read()).contracts,1);assert.ok((await read()).resources.credits>coins);
   await seed('E.spawnNpc(s); E.spawnNpc(s);');await page.locator('[data-view="village"]').click();await page.screenshot({path:'artifacts/village-desktop.png'});
-  await page.locator('[data-view="base"]').click();await page.locator('[data-action="terrain"][data-tool="flatten"]').click();await page.locator('[data-tool="lower"]').click();await clickWorld(12.5,12.5);assert.equal((await read()).terrain[12*18+12].kind,'water');
+  await page.locator('[data-view="base"]').click();await page.locator('[data-action="terrain"][data-tool="flatten"]').click();await page.locator('[data-tool="lower"]').click();await clickWorld(12.5,12.5);assert.equal((await read()).terrain[12*E.GRID+12].kind,'water');
   await page.locator('#cancel-placement').click();await page.locator('[data-view="missions"]').click();await page.locator('[data-action="start-mission"][data-index="0"]').click();await clickWorld(3.5,8.5);assert.equal((await read()).battle.units.length,1);await page.screenshot({path:'artifacts/combat-desktop.png'});
   await page.locator('#retreat-btn').click();await page.locator('[data-action="retreat-confirm"]').click();assert.equal((await read()).battle,null);assert.equal((await read()).army.ranger,6);
   await seed('s.nextRaidAt=Date.now()-1; E.startRaid(s);');await page.waitForTimeout(1800);assert.equal(await page.locator('#battle-bar').isVisible(),true);await page.screenshot({path:'artifacts/raid-desktop.png'});
