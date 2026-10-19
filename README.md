@@ -4,6 +4,16 @@ Juego original de estrategia y supervivencia del ecosistema Auralis para web, An
 
 [Jugar](https://oscard0823.github.io/auralis-frontier/) · [Descargar Android y Windows](https://github.com/OscarD0823/auralis-frontier/releases/latest) · [Ecosistema Auralis](https://oscard0823.github.io/Pagina-Principal/)
 
+## Alpha 0.7: mundo 3D y una economía visible
+
+- Escenario en **3D real con WebGL 2**: edificios, naturaleza, colonos, ejército, barcos y vehículos hechos con geometría original. Cámara giratoria e inclinación, iluminación común, sombras y texturas de materiales coherentes.
+- Personajes articulados: caminan, trabajan, giran y llevan una carga visible; caballería, ruedas, hélices, molinos y barcos animados. Las miniaturas muestran los modelos que aparecen en el mapa.
+- **Recolectar → cargar → transportar → entregar**. Capacidad de diez unidades, entrega parcial, destinos según el recurso y punto de desembarco gratuito para comenzar con cero inventario. Las bajas pierden la carga.
+- Estado de trabajo con fase, carga y destino; oficios rápidos; mejoras con existencias, coste y déficit, más ayuda para conseguir o estudiar cada material.
+- Dibujo limitado a la cámara, primitivas agrupadas en instancias y archivos 3D incluidos para jugar sin conexión. Se conservan las partidas. Si WebGL 2 no está disponible, se activa una vista 2D identificada como compatible.
+
+El estilo es 3D estilizado. El catálogo tiene variantes históricas, industriales y avanzadas, sin un modelo exclusivo para cada nivel de cada era. Las capas del subsuelo siguen separadas. Arquitectura, límites y fuentes: [DESIGN-3D.md](DESIGN-3D.md).
+
 ## Alpha 0.6: un pueblo que se convierte en imperio
 
 - **40 eras ampliables y 10 niveles por era**, desde un colono hasta tecnología cósmica. Los edificios tienen un nivel y un plano tecnológico: adaptar barrios antiguos cambia sus prestaciones y su aspecto.
@@ -44,7 +54,7 @@ La nueva campaña comienza con **un colono, cero recursos, cero áureos, ningún
 
 ## Alcance del motor actual
 
-La vista sigue siendo **isométrica en Canvas 2D con alturas**. El subsuelo se muestra por capas independientes y contiene celdas modificables y unidades en su nivel. Esto todavía no es el motor voxel 3D continuo, con rotación libre, volúmenes complejos y ciudades de varios pisos, propuesto al final de la conversación de diseño. Tampoco se simulan fluidos, geología física real ni presión del petróleo.
+La vista principal es **3D con cámara ortográfica giratoria, modelos articulados y sombras**. La vista 2D se conserva para equipos sin WebGL 2 y para la campaña clásica. El subsuelo se muestra por capas independientes y contiene celdas modificables y unidades en su nivel; no se simulan excavación volumétrica continua, interiores transitables, fluidos, geología física real ni presión del petróleo.
 
 El mapa activo tiene combate y trabajo detallados. Los mapas visitados e inactivos actualizan reservas, poder NPC, apoyo aliado e incursiones de forma resumida cada 30 segundos de tiempo jugado; no ejecutan todos sus soldados. El reloj de Horizontes se pausa al ocultar o cerrar el juego y durante diálogos. La campaña clásica conserva sus reglas de producción y hospital de versiones anteriores.
 
@@ -66,9 +76,9 @@ Requiere Node.js 22 o posterior.
 npm ci
 npm run dev
 npm test
+node scripts/qa-3d.mjs
 node scripts/qa-horizons.mjs
 node scripts/capture-horizons.mjs
-node scripts/qa-realism.mjs
 node scripts/qa-civilization.mjs
 node scripts/qa-browser.mjs
 node scripts/qa-expeditions.mjs

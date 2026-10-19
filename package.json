@@ -1,6 +1,6 @@
 {
   "name": "auralis-frontier",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "type": "module",
   "description": "Juego de estrategia original de Auralis para web, PC y móvil",
@@ -17,7 +17,8 @@
     "@capacitor/android": "8.5.3",
     "@capacitor/core": "8.5.3",
     "@capacitor/filesystem": "^8.1.4",
-    "@capacitor/share": "^8.0.3"
+    "@capacitor/share": "^8.0.3",
+    "three": "0.186.1"
   },
   "devDependencies": {
     "@capacitor/cli": "8.5.3",

@@ -2,3 +2,4 @@
 *.png binary
 *.ico binary
 *.jar binary
+dist/vendor/*.js -whitespace
