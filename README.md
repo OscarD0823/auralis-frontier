@@ -4,6 +4,12 @@ Juego original de estrategia y supervivencia del ecosistema Auralis para web, An
 
 [Jugar](https://oscard0823.github.io/auralis-frontier/) · [Descargar Android y Windows](https://github.com/OscarD0823/auralis-frontier/releases/latest) · [Ecosistema Auralis](https://oscard0823.github.io/Pagina-Principal/)
 
+## Alpha 0.5: arte de la civilización
+
+Horizontes incorpora cinco atlas originales: edificios de piedra y madera con tejados de paja y pizarra; colonos, lanceros, arqueras y caballería con poses de trabajo y movimiento; árboles, rocas y recursos; barcos, trenes y aviones; y materiales de terreno. El suelo usa texturas continuas ancladas al mundo, con caminos conectados, agua, costas, sombras de contacto y niebla suavizada. Los desniveles conservan sus paredes de roca, sin bordes de cubo alrededor de cada casilla plana.
+
+Los edificios se pueden seleccionar también sobre su tejado visible. El recorte y las máscaras de selección de los sprites se calculan antes de publicar, sin leer píxeles de los atlas durante la partida. Los recursos gráficos se incluyen en web, Android y Windows y se guardan para jugar sin conexión. Se conserva el formato de las partidas de Horizontes 0.4. El arte y los prompts completos están en [ARTWORK-v5.md](ARTWORK-v5.md).
+
 ## Alpha 0.4: campaña de Horizontes
 
 La nueva campaña comienza con **un colono, cero recursos, cero áureos, ningún edificio y ningún soldado**. La dificultad es máxima y las bajas son permanentes. La campaña clásica conserva su guardado y se puede abrir desde Ajustes o [classic.html](https://oscard0823.github.io/auralis-frontier/classic.html).
@@ -47,6 +53,8 @@ npm ci
 npm run dev
 npm test
 node scripts/qa-horizons.mjs
+node scripts/capture-horizons.mjs
+node scripts/qa-realism.mjs
 node scripts/qa-browser.mjs
 node scripts/qa-expeditions.mjs
 node scripts/qa-large-world.mjs
@@ -68,4 +76,4 @@ Android requiere JDK 21 y Android SDK 36. `npm run android:sync` copia `dist/` a
 
 Actualiza `versionCode` de Android con cada release. La aplicación Windows no cuenta con certificado de firma. Abre Ajustes → Exportar mundo para trasladar la partida a otro dispositivo.
 
-Código, nombres e ilustraciones originales. No contiene gráficos extraídos de Social Wars, Age of Empires, Clash of Clans ni Minecraft. El arte de las primeras eras se dibuja con código; los atlas militares originales están documentados en [ARTWORK.md](ARTWORK.md) y [ARTWORK-v3.md](ARTWORK-v3.md).
+Código, nombres e ilustraciones originales. No contiene gráficos extraídos de Social Wars, Age of Empires, Clash of Clans ni Minecraft. Los atlas están documentados en [ARTWORK.md](ARTWORK.md), [ARTWORK-v3.md](ARTWORK-v3.md) y [ARTWORK-v5.md](ARTWORK-v5.md). El dibujo de las primeras eras con código permanece como respaldo mientras cargan sus imágenes.

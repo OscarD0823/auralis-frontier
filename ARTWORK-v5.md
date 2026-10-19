@@ -1,0 +1,55 @@
+# Arte realista de Auralis Frontier 0.5
+
+Creado con la herramienta integrada `image_gen` (habilidad imagegen), sin CLI ni API externa. Son activos originales para el juego. La dirección visual toma como referencia general los RTS históricos y la [galería oficial de Age of Empires II: Definitive Edition](https://www.ageofempires.com/news/visual-look-at-aoe2de/). No se copiaron sprites de ese juego.
+
+Los cinco PNG generados se conservan sin modificación en:
+
+- [settlements-v5.png](dist/assets/art/settlements-v5.png): 12 edificios y variantes.
+- [nature-v5.png](dist/assets/art/nature-v5.png): 12 elementos naturales.
+- [people-v5.png](dist/assets/art/people-v5.png): 16 poses de cuatro unidades.
+- [transport-v5.png](dist/assets/art/transport-v5.png): 8 barcos, vehículos e infraestructuras.
+- [terrain-v5.png](dist/assets/art/terrain-v5.png): 8 materiales de terreno.
+
+Los primeros cuatro contienen transparencia real. `scripts/index-art.py` solo inspecciona sus canales alfa y escribe los 48 encuadres y las máscaras de selección de los edificios en `dist/realism-frames.js`; no cambia las imágenes. Las texturas se proyectan en coordenadas del mundo para que las casillas vecinas tengan continuidad. La niebla y las sombras se componen en capas de lienzo acotadas a la cámara.
+
+## Prompts exactos
+
+### buildings_v5
+
+Transparencia solicitada: sí.
+
+```text
+Use case: stylized-concept. Production-ready original game sprite atlas for Auralis Frontier, a realistic historical RTS with visual fidelity of detailed pre-rendered strategy games. Fixed orthographic 2:1 isometric elevated camera, front and right faces visible, consistent natural afternoon lighting from upper left, soft ambient occlusion, physically believable weathered materials and fine texture. Sophisticated grounded realism, natural proportions, subdued greens, warm timber, sandstone and slate. No text, numbers, logos, outlines, cartoon geometry, toy-like low-poly surfaces, backdrop, grid lines or artificial square base plates. Every object isolated, fully contained inside its own equal grid cell with clear transparent margins; no object overlaps another cell. True transparent alpha background. Exactly specified row-major layout. Asset: a 4-column by 3-row atlas, landscape 2048x1536. Twelve distinct entire buildings with their ground contact near 88% height of each cell. Row 1: 1 rustic town camp with large thatched timber hall, tent, stacked supplies and small flag; 2 humble medieval farmhouse with thatch roof, timber framing, stone chimney, firewood and tiny garden; 3 working farm with timber barn and compact golden wheat patch; 4 timber-braced mine entrance in rocky outcrop, rails and ore cart. Row 2: 5 substantial medieval barracks, stone footings, rough timber palisade, weapons racks and slate roof; 6 lively timber market hall with weathered canvas stalls, barrels, crates and produce; 7 tall stone watchtower with crenellations, wooden door, arrow slits and a cloth pennant; 8 wooden shipyard pier and coastal boat workshop with rope coils, wooden beams, posts and hut, but no water drawn. Row 3: 9 warehouse of rough stone, timber roof, stacked provisions; 10 diplomatic guild hall, carved timber, plaster, stone steps, modest teal pennants; 11 second medieval cottage variation with steep slate roof, small porch, firewood and stone walls; 12 second farmstead with weathered terracotta roof, wattle fencing and a vegetable patch. Actual game sprites, not a concept-art collage. Roof tiles, wood grain, straw fibers, stone courses, worn pathways immediately at contact only; avoid grass islands, platforms or large ground plates.
+```
+
+### nature_v5
+
+Transparencia solicitada: sí.
+
+```text
+Use case: stylized-concept. Production-ready original game sprite atlas for Auralis Frontier, a realistic historical RTS with visual fidelity of detailed pre-rendered strategy games. Fixed orthographic 2:1 isometric elevated camera, front and right faces visible, consistent natural afternoon lighting from upper left, soft ambient occlusion, physically believable weathered materials and fine texture. Sophisticated grounded realism, natural proportions, subdued greens, warm timber, sandstone and slate. No text, numbers, logos, outlines, cartoon geometry, toy-like low-poly surfaces, backdrop, grid lines or artificial square base plates. Every object isolated, fully contained inside its own equal grid cell with clear transparent margins; no object overlaps another cell. True transparent alpha background. Exactly specified row-major layout. Asset: 4-column by 3-row nature sprite atlas, landscape 2048x1536. Organic realistic foliage with thousands of delicate leaf clusters, natural irregular silhouette, bark and branching, no spherical or conical geometric trees. Row 1: 1 mature broadleaf oak with dark lush canopy, visible bark and twisting roots; 2 slender ash tree with lighter irregular canopy; 3 tall northern pine with layered needles and exposed rugged trunk; 4 realistic coastal palm. Row 2: 5 mossy granite boulder cluster; 6 rugged iron-bearing ore boulder cluster with oxidized mineral seams; 7 wild berry shrub with leaves and small red berries; 8 several freshly cut logs with bark and visible cut rings. Row 3: 9 a dramatic steep rocky mountain outcrop, natural strata, weathered gray stone, small moss and snow on upper ledges; 10 craggy cliff face section with layered stone and broken ledges; 11 small reed patch with cattails and grasses; 12 a compact clump of ripe wheat stalks. Each whole object centered in its cell, ground contact near 88% cell height. No land base under any item. All tree canopies must have actual alpha holes, not painted opaque white or checkerboard.
+```
+
+### people_v5
+
+Transparencia solicitada: sí.
+
+```text
+Use case: stylized-concept. Production-ready original game sprite atlas for Auralis Frontier, a realistic historical RTS with visual fidelity of detailed pre-rendered strategy games. Fixed orthographic 2:1 isometric elevated camera, front and right faces visible, consistent natural afternoon lighting from upper left, soft ambient occlusion, physically believable weathered materials and fine texture. Sophisticated grounded realism, natural proportions, subdued greens, warm timber, sandstone and slate. No text, numbers, logos, outlines, cartoon geometry, toy-like low-poly surfaces, backdrop, grid lines or artificial square base plates. Every object isolated, fully contained inside its own equal grid cell with clear transparent margins; no object overlaps another cell. True transparent alpha background. Exactly specified row-major layout. Asset: precise 4-column by 4-row animation sprite sheet, 2048x2048. Exactly sixteen full-body sprites. Four equal columns are poses: idle, walking left leg forward, walking right leg forward, working/attacking. Each character faces screen lower-right in the same elevated isometric camera, feet on identical cell baseline at 90% height, full body from head to boots; frame poses stay aligned. Row 1: the SAME realistic adult male medieval civilian settler, linen tunic, leather belt, rolled sleeves, trousers and boots, small satchel, straw hat; in fourth pose he works with a wood axe. Row 2: the SAME historical spearman with chainmail, padded leather, teal cloth detail, spear and wooden round shield; fourth pose lunges with spear. Row 3: the SAME historical female archer, linen, leather bracers, hood, quiver, wooden longbow; fourth pose draws bow. Row 4: the SAME armored cavalry rider on a realistic brown horse, teal saddle cloth, steel helmet, lance; fourth pose charges. All figures realistic anatomical proportions, finely modeled faces and clothing folds, medieval everyday materials, dark contact shadows only. No huge heads, no stick figures, no modern guns, no portrait close-ups, no perspective changes between frames.
+```
+
+### transport_v5
+
+Transparencia solicitada: sí.
+
+```text
+Use case: stylized-concept. Production-ready original game sprite atlas for Auralis Frontier, a realistic historical RTS with visual fidelity of detailed pre-rendered strategy games. Fixed orthographic 2:1 isometric elevated camera, front and right faces visible, consistent natural afternoon lighting from upper left, soft ambient occlusion, physically believable weathered materials and fine texture. Sophisticated grounded realism, natural proportions, subdued greens, warm timber, sandstone and slate. No text, numbers, logos, outlines, cartoon geometry, toy-like low-poly surfaces, backdrop, grid lines or artificial square base plates. Every object isolated, fully contained inside its own equal grid cell with clear transparent margins; no object overlaps another cell. True transparent alpha background. Exactly specified row-major layout. Asset: 4-column by 2-row vehicle sprite atlas, wide 2048x1024. Exactly eight separate fully visible vehicles with ground or water contact at 88% of cell height. Row 1: 1 a modest historical timber rowing boat with oars, wooden planks and a few supply sacks; 2 a medieval seagoing galley with one canvas sail, rigging, oars, weathered hull; 3 a realistic steel cargo ship with deck cranes and cargo containers; 4 a realistic gray naval patrol boat with small gun turret and bridge. Row 2: 5 a black steam locomotive and two loaded freight wagons, all of the short train visible as one sprite; 6 a realistic twin-engine propeller cargo aircraft in flight, three-quarter isometric view, landing gear raised; 7 a wooden footbridge with beams, ropes and detailed plank deck seen along the diagonal; 8 a short stone fortification wall and small battlement section. No tracks drawn under train, no sky, no sea or water patch under boats, no ground plate. Clear object silhouettes and transparent empty cell margins.
+```
+
+### terrain_v5
+
+Transparencia solicitada: no.
+
+```text
+Use case: stylized-concept. Production game material texture atlas for a realistic historical strategy game. Exact 4 columns by 2 rows of equal edge-to-edge texture swatches, wide 2048x1024. These are FLAT seamless overhead material surfaces, NOT isometric blocks, not rendered objects, no UI, no borders, no labels, no text, no shadows cast by tall objects. Natural subdued photorealistic microdetail at consistent scale; low contrast to blend across adjacent terrain. Row 1 left to right: 1 temperate meadow grass, tiny blades, moss and subtle bare flecks; 2 dark forest floor with tiny fallen leaves, soil and roots; 3 sandy arid earth with very small pebbles and sparse dry grass; 4 worn dirt and tiny gravel track surface. Row 2: 5 cold alpine rocky ground with thin patches of snow and lichen; 6 dark volcanic basalt ground with fine rocky grit; 7 calm clear deep blue-green water with delicate natural ripple texture and no distinct large reflection; 8 weathered sedimentary cliff rock face texture, small cracks, strata and muted moss. Each swatch should tile internally without a central recognizable motif, consistently lit diffusely with no directional lighting. Ground colors should resemble real terrain viewed from a medieval RTS camera, never neon green.
+```
