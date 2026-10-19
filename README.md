@@ -4,6 +4,13 @@ Juego original de estrategia y supervivencia del ecosistema Auralis para web, An
 
 [Jugar](https://oscard0823.github.io/auralis-frontier/) · [Descargar Android y Windows](https://github.com/OscarD0823/auralis-frontier/releases/latest) · [Ecosistema Auralis](https://oscard0823.github.io/Pagina-Principal/)
 
+## Alpha 0.11: un mundo con más volumen y sonido
+
+- **Edificios y tropas 3D renovados**: masas biseladas, tejados a cuatro aguas, ayuntamiento con campanario, casas con porche y buhardilla, almacenes abiertos y cuarteles con torre. Ventanas, troncos, carros de mineral, antenas, vehículos, orugas, cascos y rostros usan geometría y materiales compartidos.
+- **Terreno continuo** con variación de color a escala del mundo, tejas y madera pintadas por código, vegetación, sombras de contacto y agua animada. Partículas limitadas para trabajo, chimeneas y proyectiles con impacto.
+- **21 sonidos originales** sintetizados: tala, minería, agua, pasos, motores, navegación, arcos, disparos, explosiones, avisos y recompensas; aves/grillos según el ciclo del día. Audio posicional sobre lo visible; volumen general, efectos, ambiente y música opcional en Ajustes. Se activa con la primera interacción y se suspende al ocultar el juego.
+- Los 64 edificios, 33 unidades, diez niveles y los pueblos del catálogo comparten el nuevo estilo. Se conserva la campaña. La geometría es original y estilizada; no se incluyen modelos ni sonidos de los juegos de referencia.
+
 ## Alpha 0.10: el estándar entra en la campaña
 
 - **64 edificios funcionales y 33 unidades reclutables** con modelos 3D propios, diez niveles/equipos y aperturas por era. Los edificios incorporan adornos de los pueblos ya desbloqueados; los enclaves remotos muestran su arquitectura.
