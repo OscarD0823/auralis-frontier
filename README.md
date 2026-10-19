@@ -1,35 +1,42 @@
-# Auralis Frontier
+# Auralis Frontier · Horizontes
 
-Juego original de estrategia y gestión del ecosistema Auralis. Combina una base isométrica, tecnología militar, magia, comercio con habitantes y combates contra IA local.
+Juego original de estrategia y supervivencia del ecosistema Auralis para web, Android y Windows.
 
-**Jugar:** https://oscard0823.github.io/auralis-frontier/
+[Jugar](https://oscard0823.github.io/auralis-frontier/) · [Descargar Android y Windows](https://github.com/OscarD0823/auralis-frontier/releases/latest) · [Ecosistema Auralis](https://oscard0823.github.io/Pagina-Principal/)
 
-**Android y Windows:** https://github.com/OscarD0823/auralis-frontier/releases/latest
+## Alpha 0.4: campaña de Horizontes
 
-## Qué incluye la alpha 0.3
+La nueva campaña comienza con **un colono, cero recursos, cero áureos, ningún edificio y ningún soldado**. La dificultad es máxima y las bajas son permanentes. La campaña clásica conserva su guardado y se puede abrir desde Ajustes o [classic.html](https://oscard0823.github.io/auralis-frontier/classic.html).
 
-- Base de 48 × 48 casillas (antes 18 × 18), hasta 180 edificios y terreno modificable; minimapa, zoom y desplazamiento.
-- 17 tipos de edificio con funciones: mando, extractor, reactor, cuartel, refinería, torre, santuario, muralla, fábrica de vehículos, hangar, batería de misiles, laboratorio, hospital, mercado, embajada, depósito y astillero. Mejoras, reparación y reubicación.
-- 14 clases: comando, tanque Bastión, dron Avispa, maga, gólem, draco, jeep, lanzamisiles, helicóptero, lancero, arquera, caballero, cañonera y transporte. Instalaciones especializadas, tecnologías, límite inicial 60 ampliable a 120.
-- Control directo del ejército en la base y las expediciones: clic, recuadro, doble clic por clase, Shift para añadir, Ctrl + 1–9 para guardar grupos y 1–9 para recuperarlos. Clic derecho para mover o atacar; A + clic avanza y ataca, S mantiene posición. Formaciones de línea y columna. En móvil, selección y órdenes mediante botones y toques.
-- 24 regiones procedurales de 40 × 40, generadas de forma determinista a partir de una semilla y conservadas en la partida. Praderas, desiertos, tundra, archipiélagos, zonas volcánicas y selvas. Lagos, bosques, alturas, yacimientos y emplazamientos distintos.
-- Niebla de exploración persistente durante cada expedición: el ejército descubre terreno y enemigos. La IA utiliza defensas y tropas de distintas civilizaciones.
-- Rutas terrestres o marítimas desde Aurora o una colonia. Requieren depósito y, en el mar, astillero. Consumen aleación durante la expedición; sin suministros las tropas se mueven más despacio. Las rutas deben mantener una conexión activa con Aurora.
-- Conquista, fundación y crecimiento de colonias mineras, comerciales o fortalezas. Construye infraestructuras en hasta 20 solares, consulta su vista isométrica y recibe sus exportaciones en la base inicial. Los edificios productivos, comerciales y de protección modifican los envíos.
-- Tres civilizaciones de IA con relaciones, ayuda diplomática y alianzas. Los pactos aportan daño, comercio o logística. Seis minerales comerciables: hierro, cobre, cobalto, cristal marino, obsidiana y esmeralda.
-- Combate naval con cañoneras y transportes de 12 plazas. Las tropas terrestres no cruzan el mar: hay que embarcarlas, navegar hasta la costa y desembarcar. Los helicópteros y criaturas voladoras pueden sobrevolarlo.
-- Desastres según el bioma: incendio, tormenta de arena, ventisca, temporal, erupción e inundación. Se anuncian 8 segundos antes y dañan unidades y objetivos dentro de la zona señalada.
-- Tres operaciones guiadas, incursiones contra Aurora, encargos de NPC y áureos como moneda de compra.
-- Ilustraciones originales con poses de reposo, marcha y ataque. Fuentes y prompts en [ARTWORK.md](ARTWORK.md) y [ARTWORK-v3.md](ARTWORK-v3.md).
-- Web/PWA sin conexión, Android y Windows con contenido incluido. Guardado, exportación e importación validadas entre plataformas.
+- Isla natal de **8192 × 8192 casillas** (67.108.864 posiciones virtuales). Otras islas de 2048 o 8192 casillas y océanos de 8192. Bosques, ríos, cordilleras, acantilados, costas, relieve volcánico y seis biomas.
+- Generación determinista por sectores de 32 × 32, caché de hasta 64 sectores de terreno por mapa, dibujo limitado a la cámara y un margen. El terreno generado se descarta; las modificaciones permanecen. La escala en casillas es de diseño, sin equivalencia oficial con GTA V o kilómetros reales.
+- Niebla persistente y visión actual, más reducida durante la noche. Los árboles y recursos son finitos; recolectarlos consume el nodo y permite despejar terreno.
+- **Siete eras**: supervivencia, aldea de piedra, metalurgia, navegación, industria, era moderna y orbital. Cada avance consume materiales y tarda de 10 a 90 minutos de tiempo jugado. La extracción y el entrenamiento también llevan tiempo.
+- **Dieciséis edificios funcionales**: campamento, vivienda, granja, mina, cuartel, mercado, torre, puerto, almacén, embajada, hospital, refinería, fábrica, central, aeródromo y observatorio. Construcción libre en suelo descubierto, despejado y llano; un colono debe trabajar en la obra.
+- **Catorce tipos de unidad**, incluido el colono: lanceros, arqueros, caballería, bote, galera, carguero, fragata, infantería, jeep, tanque, lanzamisiles, helicóptero y dron. Las instalaciones y las eras desbloquean la producción. El hospital cura supervivientes; no resucita tropas.
+- Control RTS con selección por recuadro, formaciones de línea/columna, avance y ataque, exploración automática, detención, grupos Ctrl + 1–9 y órdenes en cola con Shift. Movimiento terrestre, naval, aéreo y por galerías.
+- Islas y océanos como **mapas independientes conectados por costas y puntos de desembarco**. Hay que descubrir una salida y acercar físicamente la flota. Las unidades terrestres embarcan y desembarcan. Cada costa de una isla puede conducir a otro océano con destinos distintos. La navegación de ida y vuelta conserva el estado.
+- Civilizaciones NPC con reservas, defensores, nivel tecnológico, encargos remunerados en áureos, confianza, alianzas y declaración de guerra. Las bases hostiles envían incursiones. Al conquistarlas, parte de sus reservas pasa a la colonia. Piratas en el océano.
+- Caminos, puentes, murallas, elevación del terreno, vías y tuberías con costes materiales. Convoyes marítimos y aéreos entre instalaciones; tren entre mina y almacén sobre una vía continua. Transportan existencias reales y consumen alimentos o combustible. Romper la vía interrumpe el tren.
+- **Cuarenta capas excavables**: pozos verticales y galerías laterales, descenso de colonos, colocación de bloques, entibados y escaleras. Geología por semilla: piedra, carbón, hierro, oro, cristal y petróleo. La profundidad depende de la era; el petróleo necesita refinería y tubería conectada.
+- Ciclo de día y noche, ocho fases lunares y eventos con aviso: auroras, meteoritos, tormentas solares, terremotos, maremotos, tsunamis y tornados. Los eventos peligrosos dañan unidades y edificios; algunos modifican el terreno. La tormenta solar corta la energía industrial.
+- IndexedDB, copia local de recuperación cuando cabe, exportación/importación JSON y archivos del juego disponibles sin conexión. Los mundos de web, Android y Windows son independientes hasta importar una copia.
 
-## Funcionamiento del guardado y de la IA
+## Alcance del motor actual
 
-Es una alpha para un jugador. La IA usa reglas de combate y búsqueda de rutas en el dispositivo; no necesita un servicio de inteligencia artificial externo. Las incursiones y los combates solo avanzan mientras el juego está visible. La producción continúa al volver al juego con un máximo de cuatro horas acumuladas.
+La vista sigue siendo **isométrica en Canvas 2D con alturas**. El subsuelo se muestra por capas independientes y contiene celdas modificables y unidades en su nivel. Esto todavía no es el motor voxel 3D continuo, con rotación libre, volúmenes complejos y ciudades de varios pisos, propuesto al final de la conversación de diseño. Tampoco se simulan fluidos, geología física real ni presión del petróleo.
 
-Cada instalación guarda una colonia propia. Para continuar en otra plataforma, exporta la partida e impórtala allí. Todavía no incluye cuentas Auralis, sincronización automática, multijugador, clanes, compras reales ni batallas entre jugadores.
+El mapa activo tiene combate y trabajo detallados. Los mapas visitados e inactivos actualizan reservas, poder NPC, apoyo aliado e incursiones de forma resumida cada 30 segundos de tiempo jugado; no ejecutan todos sus soldados. El reloj de Horizontes se pausa al ocultar o cerrar el juego y durante diálogos. La campaña clásica conserva sus reglas de producción y hospital de versiones anteriores.
 
-La versión 0.3 conserva las partidas de 0.1 y 0.2: amplía el terreno conservando las casillas y coordenadas anteriores y añade las clases y sistemas nuevos. Actualiza todas las aplicaciones antes de trasladar una partida de 0.3 a otro dispositivo. Las colonias se administran desde el mapa regional; la construcción libre por casilla se realiza en Aurora. Las alianzas son con facciones locales de IA, sin multijugador. Los desastres afectan las expediciones visibles; no se simulan al cerrar el juego.
+El generador `sectors-v1` está versionado. Se persisten semillas, cambios, exploración, excavaciones, unidades, construcciones, inventarios, relaciones y rutas. La búsqueda de caminos usa tramos locales acotados, con un máximo de dos búsquedas nuevas por paso; no reserva matrices del tamaño del mundo. El prototipo admite hasta 1000 mapas visitados, 2000 unidades por mapa y copias importadas de hasta 64 MB. El rendimiento depende del dispositivo y de la cantidad de objetos visibles.
+
+No incluye cuentas, sincronización automática, multijugador ni servicios de IA externos. GitHub Pages aloja el juego estático. La IA se ejecuta en el dispositivo.
+
+## Campaña clásica y compatibilidad
+
+La campaña clásica amplía la base a 512 × 512 y las expediciones a 416 × 416, añade relieve, visión actual, niebla recordada, autoexploración y cuatro dificultades. Conserva las partidas 0.1–0.3 sin mover sus construcciones. Incluye los 17 edificios, 14 tropas militares y arcanas, 24 regiones, colonias, diplomacia, mejoras, reparación y las tres operaciones anteriores.
+
+El guardado clásico usa su clave anterior. Horizontes tiene formato y almacenamiento separados; empezar la nueva campaña no borra la antigua. Las copias se importan en su campaña correspondiente.
 
 ## Ejecutar y comprobar
 
@@ -39,43 +46,26 @@ Requiere Node.js 22 o posterior.
 npm ci
 npm run dev
 npm test
+node scripts/qa-horizons.mjs
+node scripts/qa-browser.mjs
+node scripts/qa-expeditions.mjs
+node scripts/qa-large-world.mjs
 ```
 
-Abre http://127.0.0.1:4183/. La web no requiere compilación: `dist/` contiene todos los recursos y no depende de CDN.
+Abre http://127.0.0.1:4183/. `dist/` contiene la web completa, sin CDN ni compilación previa. Los scripts de navegador usan Playwright con Edge en el entorno de desarrollo. GitHub Actions publica `dist/` al enviar cambios a `main`.
 
-GitHub Actions publica `dist/` en GitHub Pages al enviar cambios a `main`.
+Las pruebas comprueban recursos iniciales, consumo de nodos, obras, eras y sus tiempos, pérdidas permanentes, órdenes, puentes, 40 capas, petróleo, ida/vuelta entre mapas, persistencia, eventos, comercio, convoyes y ferrocarril interrumpido. Las pruebas de navegador ejercitan acciones reales, móvil, exportación, importación inválida y recarga sin conexión.
 
-## Android
+## Android y Windows
 
-Requiere JDK 21 y Android SDK 36. El proyecto nativo está en `android/`.
+Android requiere JDK 21 y Android SDK 36. `npm run android:sync` copia `dist/` al proyecto nativo. Después ejecuta `android/gradlew assembleRelease`. Para firmar, define `AURALIS_KEYSTORE_FILE` y `AURALIS_KEY_PASSWORD`; alias `auralis-frontier`. Las credenciales se conservan fuera del repositorio.
 
-```sh
-npm run android:sync
-cd android
-./gradlew assembleRelease
-```
-
-Para firmar una release, define `AURALIS_KEYSTORE_FILE` y `AURALIS_KEY_PASSWORD`; alias de clave `auralis-frontier`. Las claves y contraseñas no se incluyen en el repositorio. Sin esas variables, la compilación release no queda firmada.
-
-## Windows
-
-```sh
-npm run desktop:build
-```
-
-Genera `release/Auralis-Frontier-Windows-Setup.exe`. La aplicación usa Electron con el contenido del juego incluido y se ejecuta sin servidor externo. Este instalador no dispone de certificado de firma de Windows.
-
-## Publicar las descargas
-
-Los botones del juego apuntan a estos nombres estables dentro de la última release de GitHub:
+`npm run desktop:build` genera el instalador Windows con Electron y el contenido incluido. Los nombres públicos de las descargas son estables:
 
 - `Auralis-Frontier-Android.apk`
 - `Auralis-Frontier-Windows-Setup.exe`
+- `SHA256SUMS.txt`
 
-Una release debe contener ambos archivos y `SHA256SUMS.txt`. Incrementa también `versionCode` de Android para las actualizaciones.
+Actualiza `versionCode` de Android con cada release. La aplicación Windows no cuenta con certificado de firma. Abre Ajustes → Exportar mundo para trasladar la partida a otro dispositivo.
 
-## Próximas ampliaciones
-
-Más biomas, criaturas, héroes, edificios, cadenas de producción, campañas y dificultad; edición de terreno por áreas; IA con exploración y expansión; integración de identidad Auralis cuando su contrato esté definido. Cuentas compartidas y multijugador requerirán un backend: GitHub Pages aloja archivos estáticos.
-
-Arte, nombres y código del juego creados para este proyecto. No contiene archivos, personajes ni gráficos extraídos de Social Wars o Clash of Clans.
+Código, nombres e ilustraciones originales. No contiene gráficos extraídos de Social Wars, Age of Empires, Clash of Clans ni Minecraft. El arte de las primeras eras se dibuja con código; los atlas militares originales están documentados en [ARTWORK.md](ARTWORK.md) y [ARTWORK-v3.md](ARTWORK-v3.md).

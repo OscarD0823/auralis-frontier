@@ -6,7 +6,7 @@ const browser=await chromium.launch({headless:true,channel:'msedge'}),context=aw
 page.on('pageerror',e=>errors.push(e.message));
 try{
   const legacy=E.createGame();delete legacy.army.arcanist;delete legacy.army.golem;delete legacy.army.drake;legacy.tutorialSeen=true;legacy.resources.credits=4000;legacy.buildings.push({id:'old-workshop',type:'refinery',x:12,y:12,level:1,hp:700});
-  await page.goto('http://127.0.0.1:4183/icon.svg');await page.evaluate(s=>localStorage.setItem('auralis-frontier-save-v1',JSON.stringify(s)),legacy);await page.goto('http://127.0.0.1:4183/');
+  await page.goto('http://127.0.0.1:4183/icon.svg');await page.evaluate(data=>localStorage.setItem('auralis-frontier-save-v1',data),E.encodeSave(legacy));await page.goto('http://127.0.0.1:4183/classic.html');
   await page.evaluate(async()=>{const a=await import('./art.js');await a.artReady;});
   const assets=await page.evaluate(async()=>{const a=await import('./art.js');return Object.keys(a.atlases);});assert.equal(assets.length,6);
   await page.locator('[data-view="army"]').click();assert.equal(await page.locator('.unit-card').count(),14);assert.equal(await page.locator('[data-type="arcanist"][data-action="train"]').isDisabled(),true);assert.equal(await page.locator('[data-type="drake"][data-action="train"]').isDisabled(),true);

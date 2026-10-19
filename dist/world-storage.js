@@ -1,0 +1,9 @@
+const KEY='auralis-horizons-v1';
+let database=null,pending=null,saving=false;
+function open(){return database||(database=new Promise((resolve,reject)=>{if(!globalThis.indexedDB){reject(Error('IndexedDB no disponible'));return;}const request=indexedDB.open('auralis-worlds',1);request.onupgradeneeded=()=>request.result.createObjectStore('saves');request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);}));}
+function transaction(db,mode,action){return new Promise((resolve,reject)=>{const tx=db.transaction('saves',mode),store=tx.objectStore('saves');let result;const r=action(store);if(r)r.onsuccess=()=>{result=r.result;};tx.oncomplete=()=>resolve(result);tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error||Error('Guardado interrumpido'));});}
+export async function loadWorld(){let stored=null,mirror=null;try{stored=await transaction(await open(),'readonly',store=>store.get(KEY));}catch{}try{mirror=localStorage.getItem(KEY);}catch{}if(stored&&mirror){try{return JSON.parse(mirror).time>JSON.parse(stored).time?mirror:stored;}catch{return stored;}}return stored||mirror;}
+// Latest snapshot wins, writes are ordered, and an interrupted write keeps the previous transaction.
+export async function persistWorld(raw){pending=raw;if(saving)return; saving=true;let error=null;try{while(pending){const next=pending;pending=null;try{const db=await open();await transaction(db,'readwrite',store=>store.put(next,KEY));try{if(next.length<3500000)localStorage.setItem(KEY,next);}catch{}}catch(e){error=e;try{localStorage.setItem(KEY,next);error=null;}catch{}}}}finally{saving=false;}if(error)throw error;}
+export function emergencyMirror(raw){try{if(raw.length<3500000)localStorage.setItem(KEY,raw);}catch{}}
+export async function clearWorld(){try{await transaction(await open(),'readwrite',store=>store.delete(KEY));}catch{}try{localStorage.removeItem(KEY);}catch{}}

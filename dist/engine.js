@@ -1,7 +1,8 @@
-import { createFrontier, colonyRates, advanceFrontier, capacity, enemyFieldStep, tacticalStep, environmentalStep, syncGarrison, conquer, regionInfo, validFrontier, validMap } from './frontier.js';
+import {HOME_SIZE,DIFFICULTIES,generateHome,decodeWorld,TILE_KINDS,touchTerrain,revealArea,walkable,findTerrainPath} from './terrain.js';
+import { createFrontier, colonyRates, advanceFrontier, capacity, enemyFieldStep, tacticalStep, environmentalStep, syncGarrison, conquer, regionInfo, validFrontier, validMap, rememberExploration, homeMap, moveUnit } from './frontier.js';
 export * from './frontier.js';
 export const VERSION = 1;
-export const GRID = 48;
+export const GRID = HOME_SIZE;
 export const BUILDINGS = {
   command: { name: 'Centro de mando', tag: 'COMANDO', description: 'El corazón de tu colonia. Produce áureos y desbloquea tropas al mejorar: maga y gólem en nivel 2, draco en nivel 3.', cost: {}, rate: { credits: 2 }, color: '#75d4ca', size: 2, hp: 1800 },
   mine: { name: 'Extractor', tag: 'ECONOMÍA', description: 'Extrae aleación. Véndela o entrégala a los habitantes para ganar áureos.', cost: { credits: 180 }, rate: { alloy: 1.2 }, color: '#f3b75e', size: 2, hp: 600 },
@@ -52,15 +53,15 @@ export const MISSIONS = [
 export const unitCount = army => Object.values(army).reduce((a,b)=>a+b,0);
 export const ready = (b, now) => (!b.readyAt || b.readyAt <= now) && b.hp !== 0;
 export function createGame(now = Date.now()) {
-  return { version: VERSION, createdAt: now, updatedAt: now, resources: { credits: 900, alloy: 420, energy: 240 }, xp: 0, campaign: 0, army: Object.fromEntries(Object.keys(UNITS).map(k=>[k,k==='ranger'?6:['bulwark','wasp'].includes(k)?1:0])), jobs: [], buildings: [
+  const s={ version: VERSION, createdAt: now, updatedAt: now, resources: { credits: 900, alloy: 420, energy: 240 }, xp: 0, campaign: 0, army: Object.fromEntries(Object.keys(UNITS).map(k=>[k,k==='ranger'?6:['bulwark','wasp'].includes(k)?1:0])), jobs: [], buildings: [
     { id: 'hq', type: 'command', x: 7, y: 7, level: 1 },
     { id: 'mine-0', type: 'mine', x: 4, y: 7, level: 1 },
     { id: 'reactor-0', type: 'reactor', x: 7, y: 4, level: 1 },
     { id: 'barracks-0', type: 'barracks', x: 10, y: 7, level: 1 },
     { id: 'turret-0', type: 'turret', x: 6, y: 10, level: 1 },
   ].map(b=>({...b,hp:BUILDINGS[b.type].hp})), battle: null, history: [], tutorialSeen: false,
-    terrain: Array.from({length:GRID*GRID},(_,i)=>{const x=i%GRID,y=Math.floor(i/GRID);if(y>=20&&x<18)return{h:-1,kind:'water'};return {h:0,kind:(x<2||y<2||x>16||y>16)&&Math.sin(x*73+y*51)>.3?'forest':'grass'};}),
-    frontier:createFrontier(now%4294967295), tech:{weapons:0,armor:0,logistics:0}, garrison:[], offers: [], nextNpcAt: now+15000, npcSerial: 0, contracts: 0, raid: null, nextRaidAt:now+360000, raidsDefended:0 };
+    terrain:generateHome(now%4294967295,GRID),explored:Array(GRID*GRID).fill(0),
+    frontier:createFrontier(now%4294967295), tech:{weapons:0,armor:0,logistics:0}, garrison:[], offers: [], nextNpcAt: now+15000, npcSerial: 0, contracts: 0, raid: null, nextRaidAt:now+360000, raidsDefended:0 };for(const b of s.buildings)revealArea({terrain:s.terrain,discovered:s.explored,size:GRID},b.x+1,b.y+1,b.type==='command'?13:6);return s;
 }
 export function production(s, now = Date.now()) {
   const rate = { credits: 0, alloy: 0, energy: 0 };
@@ -87,17 +88,17 @@ export function canPlace(s,type,x,y) {
   const spec = BUILDINGS[type];
   if (!spec || type==='command' || !Number.isInteger(x) || !Number.isInteger(y) || x<1 || y<1 || x+spec.size>=GRID || y+spec.size>=GRID) return false;
   const h=s.terrain?.[y*GRID+x]?.h||0;
-  for(let a=x;a<x+spec.size;a++)for(let c=y;c<y+spec.size;c++){const t=s.terrain?.[c*GRID+a];if(t&&(t.kind==='water'||t.kind==='forest'||t.h!==h))return false;}
+  for(let a=x;a<x+spec.size;a++)for(let c=y;c<y+spec.size;c++){const t=s.terrain?.[c*GRID+a];if(s.explored&&!s.explored[c*GRID+a]||t&&(!['grass','path','bridge'].includes(t.kind)||t.h!==h))return false;}
   return !s.buildings.some(b=> x < b.x+BUILDINGS[b.type].size && x+spec.size>b.x && y<b.y+BUILDINGS[b.type].size && y+spec.size>b.y);
 }
 export function build(s,type,x,y,now=Date.now()) {
   if(s.raid)return {ok:false,message:'Termina la incursión antes de construir.'};
   if (!canPlace(s,type,x,y)) return {ok:false,message:'Necesitas terreno libre, llano y sin bosque. Puedes reformarlo.'};
   if (!affordable(s,BUILDINGS[type].cost)) return {ok:false,message:'Todavía no tienes suficientes recursos.'};
-  if (s.buildings.length>=180) return {ok:false,message:'Has alcanzado el límite de 180 edificios.'};
+  if (s.buildings.length>=1200) return {ok:false,message:'Has alcanzado el límite de 1200 edificios.'};
   pay(s,BUILDINGS[type].cost);
   const id='b-'+now+'-'+s.buildings.length;
-  s.buildings.push({id,type,x,y,level:1,hp:BUILDINGS[type].hp,readyAt:now+8000});s.xp+=15;
+  s.buildings.push({id,type,x,y,level:1,hp:BUILDINGS[type].hp,readyAt:now+8000});touchTerrain(s.terrain);s.xp+=15;
   return {ok:true,message:BUILDINGS[type].name+' en construcción.',id};
 }
 export function upgradeCost(b) { return { credits: 300*b.level*(b.type==='command'?2:1) }; }
@@ -160,15 +161,16 @@ export function battleStep(s,dt) {
     e.cooldown=Math.max(0,e.cooldown-dt);
     const targets=b.units.filter(u=>u.hp>0&&!u.embarked&&Math.hypot(u.x-e.x,u.y-e.y)<4.6);
     targets.sort((a,c)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(c.x-e.x,c.y-e.y));
-    if(targets.length&&e.cooldown<=0){const u=targets[0];u.hp=Math.max(0,u.hp-(15+b.mission*15));e.cooldown=.95;shots.push({x:e.x,y:e.y,tx:u.x,ty:u.y,enemy:true});}
+    if(targets.length&&e.cooldown<=0){const u=targets[0];u.hp=Math.max(0,u.hp-(15+(b.regionId!==undefined?Math.floor(b.regionId/3):b.mission)*15)*(DIFFICULTIES[b.difficulty]?.damage||1));e.cooldown=.95;shots.push({x:e.x,y:e.y,tx:u.x,ty:u.y,enemy:true});}
   }
   if(b.enemies.every(e=>e.hp<=0))b.outcome='victory';
-  else if(b.elapsed>=(b.map?1200:180)||(!unitCount(b.reserve)&&!b.units.some(u=>u.hp>0)))b.outcome='defeat';
+  else if(b.elapsed>=(b.map?(b.duration||1200):180)||(!unitCount(b.reserve)&&!b.units.some(u=>u.hp>0)))b.outcome='defeat';
   return shots;
 }
 export function finishBattle(s,retreat=false) {
   const b=s.battle;
   if(!b||(!retreat&&!b.outcome))return {ok:false,message:'La operación continúa.'};
+  rememberExploration(s);
   for(const type of Object.keys(UNITS))s.army[type]+=b.reserve[type]+b.units.filter(u=>u.type===type&&u.hp>0).length;
   const victory=!retreat&&b.outcome==='victory',first=victory&&(b.regionId!==undefined||b.mission===s.campaign);
   const reward=Object.fromEntries(Object.entries((b.regionId!==undefined?regionInfo(s,b.regionId):MISSIONS[b.mission]).reward).map(([k,v])=>[k,Math.floor(v*(first?1:.35))]));
@@ -180,23 +182,25 @@ export function finishBattle(s,retreat=false) {
   return result;
 }
 export function readSave(raw,now=Date.now()) {
-  let s;try{s=JSON.parse(typeof raw==='string'?raw:JSON.stringify(raw));}catch{return null;}if(!s||typeof s!=='object'||Array.isArray(s))return null;
+  let s;try{s=JSON.parse(typeof raw==='string'?raw:JSON.stringify(raw));}catch{return null;}if(!s||typeof s!=='object'||Array.isArray(s))return null;try{decodeWorld(s);}catch{return null;}
   // Old 0.1.0 saves keep their base, army and in-progress battles when the roster grows.
   for(const type of Object.keys(UNITS).filter(k=>!['ranger','bulwark','wasp'].includes(k))){
     if(s?.army&&typeof s.army==='object'&&!Object.hasOwn(s.army,type))s.army[type]=0;
     if(s?.battle?.reserve&&typeof s.battle.reserve==='object'&&!Object.hasOwn(s.battle.reserve,type))s.battle.reserve[type]=0;
   }
-  if(s&&Array.isArray(s.terrain)&&s.terrain.length===324){const old=s.terrain;s.terrain=createGame(now).terrain;for(let y=0;y<18;y++)for(let x=0;x<18;x++)s.terrain[y*GRID+x]=old[y*18+x];}
+  if(Array.isArray(s.terrain)&&[324,2304].includes(s.terrain.length)){const old=s.terrain,oldSize=Math.sqrt(old.length),oldFog=s.explored;s.terrain=generateHome((s.createdAt||now)%4294967295,GRID);s.explored=Array(GRID*GRID).fill(0);for(let y=0;y<oldSize;y++)for(let x=0;x<oldSize;x++){s.terrain[y*GRID+x]=old[y*oldSize+x];s.explored[y*GRID+x]=oldFog?.[y*oldSize+x]??1;}}
+  if(!s.explored&&Array.isArray(s.terrain)){s.explored=Array(s.terrain.length).fill(0);for(const b of s.buildings||[])if(Number.isFinite(b.x)&&Number.isFinite(b.y))revealArea({terrain:s.terrain,discovered:s.explored,size:GRID},b.x+1,b.y+1,12);}
   if(s&&!s.frontier)s.frontier=createFrontier((s.createdAt||now)%4294967295);
+  if(s.frontier){s.frontier.difficulty??='normal';s.frontier.exploration??={};}
   if(s?.frontier&&!s.frontier.minerals)s.frontier.minerals=[0,0,0,0,0,0];
   if(s&&!s.tech)s.tech={weapons:0,armor:0,logistics:0};
-  if(s){s.garrison??=[];if(!Array.isArray(s.garrison)||s.garrison.length>120||s.garrison.some(u=>!Object.hasOwn(UNITS,u.type)||typeof u.id!=='string'||u.id.length>80||!Number.isFinite(u.x)||!Number.isFinite(u.y)||u.x<0||u.y<0||u.x>48||u.y>48||!Number.isFinite(u.hp)||u.hp<0||u.hp>5000||!Number.isFinite(u.maxHp)||u.maxHp<1||u.maxHp>5000))return null;for(const u of s.garrison){delete u.path;delete u.pathTarget;if(u.order&&(!['hold','auto','move','attack','attackMove'].includes(u.order.kind)||!['hold','auto'].includes(u.order.kind)&&(!Number.isFinite(u.order.x)||!Number.isFinite(u.order.y)||u.order.x<0||u.order.y<0||u.order.x>48||u.order.y>48)))return null;}if(!validFrontier(s.frontier)||!['weapons','armor','logistics'].every(k=>Number.isInteger(s.tech[k])&&s.tech[k]>=0&&s.tech[k]<=3))return null;}
+  if(s){s.garrison??=[];if(!Array.isArray(s.garrison)||s.garrison.length>120||s.garrison.some(u=>!Object.hasOwn(UNITS,u.type)||typeof u.id!=='string'||u.id.length>80||!Number.isFinite(u.x)||!Number.isFinite(u.y)||u.x<0||u.y<0||u.x>GRID||u.y>GRID||!Number.isFinite(u.hp)||u.hp<0||u.hp>5000||!Number.isFinite(u.maxHp)||u.maxHp<1||u.maxHp>5000))return null;for(const u of s.garrison){delete u.path;delete u.pathTarget;if(u.order&&(!['hold','auto','move','attack','attackMove','explore'].includes(u.order.kind)||!['hold','auto','explore'].includes(u.order.kind)&&(!Number.isFinite(u.order.x)||!Number.isFinite(u.order.y)||u.order.x<0||u.order.y<0||u.order.x>GRID||u.order.y>GRID)))return null;}if(!validFrontier(s.frontier)||!['weapons','armor','logistics'].every(k=>Number.isInteger(s.tech[k])&&s.tech[k]>=0&&s.tech[k]<=3))return null;}
   const finite=(n,min,max)=>typeof n==='number'&&Number.isFinite(n)&&n>=min&&n<=max;
   const integer=(n,min,max)=>Number.isInteger(n)&&finite(n,min,max);
   if(!s||s.version!==VERSION||!finite(s.createdAt,0,now+86400000)||!finite(s.updatedAt,0,now+86400000)||!integer(s.campaign,0,3)||!finite(s.xp,0,1e9))return null;
   if(!s.resources||!['credits','alloy','energy'].every(k=>finite(s.resources[k],0,999999)))return null;
   if(!s.army||!Object.keys(s.army).every(k=>Object.hasOwn(UNITS,k))||!Object.keys(UNITS).every(k=>integer(s.army[k],0,120))||unitCount(s.army)>120)return null;
-  if(!Array.isArray(s.buildings)||s.buildings.length<1||s.buildings.length>180)return null;
+  if(!Array.isArray(s.buildings)||s.buildings.length<1||s.buildings.length>1200)return null;
   const occupied=new Set(),ids=new Set();
   for(const b of s.buildings){
     if(!Object.hasOwn(BUILDINGS,b.type)||typeof b.id!=='string'||b.id.length>80||ids.has(b.id)||!integer(b.level,1,5)||!integer(b.x,1,GRID-2)||!integer(b.y,1,GRID-2)||b.x+BUILDINGS[b.type].size>=GRID||b.y+BUILDINGS[b.type].size>=GRID)return null;
@@ -207,7 +211,8 @@ export function readSave(raw,now=Date.now()) {
   }
   if(s.buildings.filter(b=>b.type==='command').length!==1)return null;
   for(const b of s.buildings)if(!finite(b.hp,0,BUILDINGS[b.type].hp*b.level))return null;
-  if(!Array.isArray(s.terrain)||s.terrain.length!==GRID*GRID||s.terrain.some(t=>!t||!integer(t.h,-1,3)||!['grass','forest','water','path'].includes(t.kind)))return null;
+  if(!Array.isArray(s.terrain)||s.terrain.length!==GRID*GRID||s.terrain.some(t=>!t||!integer(t.h,-1,12)||!TILE_KINDS.includes(t.kind)))return null;
+  if(!Array.isArray(s.explored)||s.explored.length!==GRID*GRID||s.explored.some(v=>v!==0&&v!==1))return null;
   if(!finite(s.nextNpcAt,0,now+86400000)||!finite(s.nextRaidAt,0,now+86400000)||!integer(s.npcSerial,0,1e9)||!integer(s.contracts,0,1e9)||!integer(s.raidsDefended,0,1e9))return null;
   if(!Array.isArray(s.offers)||s.offers.length>3||s.offers.some(o=>!integer(o.id,0,1e9)||!integer(o.kind,0,2)||!['alloy','energy'].includes(o.resource)||!integer(o.amount,1,10000)||!integer(o.reward,1,100000)||!finite(o.expiresAt,0,now+86400000)))return null;
   if(s.raid){const r=s.raid;if(!finite(r.elapsed,0,181)||![null,'victory','defeat'].includes(r.outcome)||!Array.isArray(r.units)||r.units.length>20||r.units.some(u=>!finite(u.x,0,GRID)||!finite(u.y,0,GRID)||!finite(u.hp,0,2000)||!finite(u.maxHp,1,2000)||u.hp>u.maxHp||!finite(u.cooldown,-1,5)))return null;}
@@ -215,18 +220,19 @@ export function readSave(raw,now=Date.now()) {
   if(s.battle){
     if(s.raid)return null;
     const b=s.battle;
-    if(b.map&&(!validMap(b.map)||!integer(b.regionId,0,23)||s.frontier.regions[b.regionId].status!=='open'||!finite(b.supply,0,100)||!finite(b.nextDisaster,0,1300)))return null;
-    if(b.disaster&&(!b.map||typeof b.disaster.name!=='string'||b.disaster.name.length>60||!finite(b.disaster.x,0,40)||!finite(b.disaster.y,0,40)||!finite(b.disaster.radius,1,8)||!finite(b.disaster.starts,0,1300)||!finite(b.disaster.until,0,1300)))return null;
-    if(!integer(b.mission,0,2)||b.mission>s.campaign||!finite(b.elapsed,0,b.map?1201:181)||!finite(b.bonus,0,.4)||![null,'victory','defeat'].includes(b.outcome)||!b.reserve||!Object.keys(b.reserve).every(k=>Object.hasOwn(UNITS,k))||!Object.keys(UNITS).every(k=>integer(b.reserve[k],0,120)))return null;
+    if(b.difficulty!==undefined&&!Object.hasOwn(DIFFICULTIES,b.difficulty)||b.duration!==undefined&&b.duration!==3600)return null;
+    if(b.map&&(!validMap(b.map)||!integer(b.regionId,0,23)||s.frontier.regions[b.regionId].status!=='open'||!finite(b.supply,0,100)||!finite(b.nextDisaster,0,5000)))return null;
+    if(b.disaster&&(!b.map||typeof b.disaster.name!=='string'||b.disaster.name.length>60||!finite(b.disaster.x,0,b.map.size)||!finite(b.disaster.y,0,b.map.size)||!finite(b.disaster.radius,1,8)||!finite(b.disaster.starts,0,5000)||!finite(b.disaster.until,0,5000)))return null;
+    if(!integer(b.mission,0,2)||b.mission>s.campaign||!finite(b.elapsed,0,b.map?3601:181)||!finite(b.bonus,0,.4)||![null,'victory','defeat'].includes(b.outcome)||!b.reserve||!Object.keys(b.reserve).every(k=>Object.hasOwn(UNITS,k))||!Object.keys(UNITS).every(k=>integer(b.reserve[k],0,120)))return null;
     if(!Array.isArray(b.units)||b.units.length>120||!Array.isArray(b.enemies)||b.enemies.length<MISSIONS[b.mission].turrets+1||b.enemies.length>(b.map?13:MISSIONS[b.mission].turrets+4))return null;
-    const entity=e=>finite(e.x,0,b.map?40:18)&&finite(e.y,0,b.map?40:18)&&finite(e.hp,0,10000)&&finite(e.maxHp,1,10000)&&e.hp<=e.maxHp&&finite(e.cooldown,-1,5);
-    const unitIds=new Set();for(const u of b.units){if(typeof u.id!=='string'||u.id.length>80||unitIds.has(u.id))return null;unitIds.add(u.id);if(u.order&&(!['move','attack','attackMove','hold','auto'].includes(u.order.kind)||(!['hold','auto'].includes(u.order.kind)&&(!finite(u.order.x,0,48)||!finite(u.order.y,0,48)))))return null;delete u.path;delete u.pathTarget;}
+    const entity=e=>finite(e.x,0,b.map?b.map.size:18)&&finite(e.y,0,b.map?b.map.size:18)&&finite(e.hp,0,10000)&&finite(e.maxHp,1,10000)&&e.hp<=e.maxHp&&finite(e.cooldown,-1,5);
+    const unitIds=new Set();for(const u of b.units){if(typeof u.id!=='string'||u.id.length>80||unitIds.has(u.id))return null;unitIds.add(u.id);if(u.order&&(!['move','attack','attackMove','hold','auto','explore'].includes(u.order.kind)||(!['hold','auto','explore'].includes(u.order.kind)&&(!finite(u.order.x,0,b.map?.size||18)||!finite(u.order.y,0,b.map?.size||18)))))return null;delete u.path;delete u.pathTarget;}
     if(b.units.some(u=>u.embarked&&(!b.units.some(v=>v.id===u.embarked&&v.type==='transport')||UNITS[u.type]?.naval||UNITS[u.type]?.flying)))return null;
     if(b.units.some(u=>!Object.hasOwn(UNITS,u.type)||!entity(u))||b.enemies.some(e=>!['core','turret','mine','refinery','barracks',...Object.keys(UNITS)].includes(e.type)||!entity(e))||b.enemies.filter(e=>e.type==='core').length!==1)return null;
     if(unitCount(s.army)+s.jobs.length+unitCount(b.reserve)+b.units.filter(u=>u.hp>0).length>120)return null;
   } else if(unitCount(s.army)+s.jobs.length>120)return null;
   // Strip unrelated JSON properties before the save enters the application.
-  const clean=JSON.parse(JSON.stringify(s));clean.history=Array.isArray(s.history)?s.history.slice(0,10).filter(h=>integer(h.mission,0,2)&&typeof h.victory==='boolean'&&integer(h.lost,0,60)&&finite(h.at,0,now+86400000)):[];
+  const clean=s;clean.history=Array.isArray(s.history)?s.history.slice(0,10).filter(h=>integer(h.mission,0,2)&&typeof h.victory==='boolean'&&integer(h.lost,0,60)&&finite(h.at,0,now+86400000)):[];
   clean.tutorialSeen=!!s.tutorialSeen;
   return clean;
 }
@@ -254,6 +260,7 @@ export function reform(s,tool,x,y){
   if(s.raid||s.battle)return {ok:false,message:'No puedes reformar el terreno durante un combate.'};
   if(!Number.isInteger(x)||!Number.isInteger(y)||x<1||y<1||x>=GRID-1||y>=GRID-1)return {ok:false,message:'Elige una casilla dentro del territorio.'};
   if(s.buildings.some(b=>x>=b.x&&x<b.x+BUILDINGS[b.type].size&&y>=b.y&&y<b.y+BUILDINGS[b.type].size))return {ok:false,message:'Mueve primero el edificio que ocupa esta casilla.'};
+  if(s.explored&&!s.explored[y*GRID+x])return{ok:false,message:'Explora esta zona con tus tropas antes de reformarla.'};
   const t=s.terrain[y*GRID+x],next={...t};
   if(tool==='flatten'){next.h=0;next.kind='grass';}
   else if(tool==='raise'){next.h=Math.min(3,t.h+1);next.kind='grass';}
@@ -266,7 +273,7 @@ export function reform(s,tool,x,y){
   // Keep the command reachable from the map boundary; a moat cannot make the AI inert.
   const old=s.terrain[y*GRID+x];s.terrain[y*GRID+x]=next;
   if(!hasRoute(s)){s.terrain[y*GRID+x]=old;return {ok:false,message:'Conserva al menos un acceso terrestre al centro de mando.'};}
-  s.resources.credits-=25;return {ok:true,message:'Terreno reformado. −25 áureos.'};
+  touchTerrain(s.terrain);s.resources.credits-=25;return {ok:true,message:'Terreno reformado. −25 áureos.'};
 }
 function hasRoute(s){
   const hq=s.buildings.find(b=>b.type==='command'),q=[[0,8]],seen=new Set(['0,8']);
@@ -279,7 +286,7 @@ export function moveBuilding(s,id,x,y){
   const b=s.buildings.find(b=>b.id===id);if(!b)return {ok:false,message:'Edificio desconocido.'};
   const rest={...s,buildings:s.buildings.filter(c=>c!==b)},type=b.type==='command'?'barracks':b.type;
   if(!canPlace(rest,type,x,y))return {ok:false,message:'Elige terreno libre y llano.'};
-  b.x=x;b.y=y;return {ok:true,message:'Edificio reubicado.'};
+  b.x=x;b.y=y;touchTerrain(s.terrain);return {ok:true,message:'Edificio reubicado.'};
 }
 export function repair(s,id){
   if(s.raid)return {ok:false,message:'Termina la incursión antes de reparar.'};
@@ -306,7 +313,7 @@ export function raidStep(s,dt){
     const targets=[...living].sort((a,b)=>Math.hypot(a.x+.5-u.x,a.y+.5-u.y)-Math.hypot(b.x+.5-u.x,b.y+.5-u.y));
     const b=targets[0];if(!b)break;
     const tx=b.x+BUILDINGS[b.type].size/2,ty=b.y+BUILDINGS[b.type].size/2,d=Math.hypot(tx-u.x,ty-u.y);
-    if(d>1.7){const step=raidNext(s,u,{x:tx,y:ty});if(step){const dx=step.x-u.x,dy=step.y-u.y,dist=Math.hypot(dx,dy);if(dist>.03){u.x+=dx/dist*.75*dt;u.y+=dy/dist*.75*dt;}}}
+    if(d>1.7)moveUnit(u,tx,ty,{speed:.75},dt,homeMap(s));
     else if(u.cooldown<=0){b.hp=Math.max(0,b.hp-(20+s.campaign*10));u.cooldown=1;shots.push({x:u.x,y:u.y,tx,ty,enemy:true});}
   }
   // Towers and sanctuaries fire automatically. The garrison contributes to defence.

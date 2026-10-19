@@ -4,11 +4,11 @@ import assert from 'node:assert/strict';
 import * as E from '../dist/engine.js';
 const require=createRequire(import.meta.url);
 const {chromium}=require('C:/Users/odcon/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
-const base=process.argv[2]||'http://127.0.0.1:4183/';
+const base=process.argv[2]||'http://127.0.0.1:4183/classic.html';
 const browser=await chromium.launch({headless:true,channel:'msedge'}),context=await browser.newContext({viewport:{width:1440,height:940},acceptDownloads:true});
 const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await mkdir('artifacts',{recursive:true});
-const read=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('auralis-frontier-save-v1')));
-async function seed(fn){const s=E.createGame();s.tutorialSeen=true;new Function('s','E',fn)(s,E);await page.goto('about:blank');const helper=await context.newPage();await helper.goto(new URL('icon.svg',base).href);await helper.evaluate(data=>localStorage.setItem('auralis-frontier-save-v1',data),JSON.stringify(s));await helper.close();await page.goto(base);await page.waitForTimeout(300);}
+const read=async()=>E.decodeWorld(await page.evaluate(()=>JSON.parse(localStorage.getItem('auralis-frontier-save-v1'))));
+async function seed(fn){const s=E.createGame();s.tutorialSeen=true;new Function('s','E',fn)(s,E);await page.goto('about:blank');const helper=await context.newPage();await helper.goto(new URL('icon.svg',base).href);await helper.evaluate(data=>localStorage.setItem('auralis-frontier-save-v1',data),E.encodeSave(s));await helper.close();await page.goto(base);await page.waitForTimeout(300);}
 async function clickWorld(x,y){const pos=await page.locator('#game').evaluate((el,{x,y})=>{const r=el.getBoundingClientRect(),scale=Math.max(.6,Math.min(r.width/950,r.height/670))*1.1,t=52*scale;return {x:r.left+r.width*.51+(x-y)*t*.5,y:r.top+r.height*.49+(x+y-17)*t*.25};},{x,y});await page.mouse.click(pos.x,pos.y);}
 try{
   await page.goto(base);await page.getByRole('button',{name:'COMENZAR MI COLONIA'}).click();
