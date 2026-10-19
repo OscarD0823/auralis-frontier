@@ -1,9 +1,10 @@
+import {PROCESSED_STOCK} from './campaign-content.js';
 // Data-driven progression: append an age to AGE_NAMES to extend the campaign.
 export const LEVELS_PER_ERA=10;
 export const ERA_IDS={stone:1,metal:3,navigation:8,industry:12,modern:17,orbital:23};
 export const LEGACY_ERAS=[0,1,3,8,12,17,23];
 const AGE_NAMES=['Supervivencia','Aldea de piedra','Agricultura','Metalurgia','Ciudades amuralladas','Imperios antiguos','Feudalismo','Reinos medievales','Navegación','Renacimiento','Pólvora','Vapor','Industria','Electricidad','Mecanización','Petróleo','Aviación','Era moderna','Información','Robótica','Biotecnología','Fusión','Nanotecnología','Era orbital','Colonias lunares','Horizonte marciano','Red interplanetaria','Minería de asteroides','Civilización solar','Terraformación','Materia programable','Antimateria','Red cuántica','Singularidad','Imperio estelar','Civilización galáctica','Ingeniería dimensional','Tecnología causal','Horizonte cósmico','Trascendencia'];
-export const STOCK_NAMES={wood:'Madera',stone:'Piedra',food:'Alimentos',water:'Agua potable',iron:'Hierro',coal:'Carbón',gold:'Oro',oil:'Petróleo',crystal:'Cristal',copper:'Cobre',tin:'Estaño',salt:'Sal',silica:'Sílice',lithium:'Litio',titanium:'Titanio',uranium:'Uranio',iridium:'Iridio',aether:'Éter mineral',credits:'Áureos'};
+export const STOCK_NAMES={wood:'Madera',stone:'Piedra',food:'Alimentos',water:'Agua potable',iron:'Hierro',coal:'Carbón',gold:'Oro',oil:'Petróleo',crystal:'Cristal',copper:'Cobre',tin:'Estaño',salt:'Sal',silica:'Sílice',lithium:'Litio',titanium:'Titanio',uranium:'Uranio',iridium:'Iridio',aether:'Éter mineral',credits:'Áureos',...PROCESSED_STOCK};
 export const MINERALS={
  stone:{era:0,depth:0,use:'Cimientos y mampostería; niveles 2–4 de los edificios.'},
  salt:{era:2,depth:1,use:'Conservación de alimentos; mejora la agricultura y reduce el consumo de comida.'},
@@ -31,4 +32,4 @@ export const SPECIES={
  synthetic:{name:'Sintéticos',symbol:'◇',description:'Una civilización mecánica que exige investigación y una fábrica avanzada. Consume un 75% menos de comida.',gather:1.15,mining:1.15,food:.25,water:.5,hp:1.15,speed:1,cost:{iron:500,lithium:100,silica:150,credits:500},morality:0},
  astral:{name:'Astrales',symbol:'✦',description:'Exploradores de materia estelar. Su pacto requiere ciencia avanzada y una reputación compasiva.',gather:1.3,mining:1.3,food:.7,water:.7,hp:1.2,speed:1.2,cost:{iridium:160,crystal:300,credits:2000},morality:50}
 };
-export const ROAD_GRADES={trail:{name:'Camino de tierra',era:0,cost:{stone:3},speed:1.3,width:.24},paved:{name:'Calzada de piedra',era:3,cost:{stone:8,wood:2},speed:1.5,width:.34},avenue:{name:'Avenida imperial',era:12,cost:{stone:15,iron:4},speed:1.75,width:.48}};
+export const ROAD_GRADES={rail:{name:'Ferrocarril',era:12,cost:{iron:8,stone:4},speed:1.5,width:.3},trail:{name:'Camino de tierra',era:0,cost:{stone:3},speed:1.3,width:.24},paved:{name:'Calzada de piedra',era:3,cost:{stone:8,wood:2},speed:1.5,width:.34},avenue:{name:'Avenida imperial',era:12,cost:{stone:15,iron:4},speed:1.75,width:.48}};

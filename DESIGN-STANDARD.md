@@ -1,6 +1,6 @@
 # Estándar de Auralis Frontier · arquitectura, habitantes e infraestructura
 
-Versión 1 · 19 de octubre de 2026. Este documento se define antes de ampliar el catálogo jugable. El [catálogo interactivo](https://oscard0823.github.io/auralis-frontier/codex.html) distingue contenido de campaña y planos de expansión. Un plano con modelo y función definida todavía no equivale a una mecánica implementada.
+Versión 2 · 19 de octubre de 2026. Estándar definido en 0.9 e integrado en la campaña 0.10. El [catálogo interactivo](https://oscard0823.github.io/auralis-frontier/codex.html) comparte los 64 edificios, 33 unidades, 12 visitantes y seis pueblos con el motor. El laboratorio permite comparar escenarios sin modificar una partida.
 
 ## 1. Análisis acumulativo de referencias
 
@@ -105,7 +105,7 @@ Cada unidad tiene papel, equipo, masa de juego, terreno admisible, capacidad de 
 
 Animaciones mínimas: espera, desplazamiento, giro, trabajo/carga, ataque, daño y caída; vehículos añaden ruedas/orugas/rotor; barcos, balance y propulsión. Los diez grados de equipo conservan la silueta y cambian mochila, protección, escudo, arma o sensor. Un civil no lleva un arma militar para parecer mejorado.
 
-NPC propuestos: topógrafo, agrimensor, geólogo, ingeniero, constructor, comerciante, transportista, médico, refugiado, diplomático, explorador y guardián. Deben tener lugar de origen, tarea, petición, recompensa y consecuencia de moralidad. Una petición exige bienes entregados, nunca resta recursos que todavía lleva un colono.
+NPC de campaña: topógrafo, agrimensor, geólogo, ingeniero, constructor, comerciante, transportista, médico, refugiado, diplomático, explorador y guardián. Deben tener lugar de origen, tarea, petición, recompensa y consecuencia de moralidad. Una petición exige bienes entregados, nunca resta recursos que todavía lleva un colono.
 
 Los seis pueblos existentes conservan sus condiciones de contacto. Humanos: madera y piedra; Verdantes: pabellones vivos sin talar el bosque sagrado; Pétreos: bóvedas y contrafuertes integrados en roca; Mareanos: plataformas costeras, cerámica y velas; Sintéticos: módulos de metal mate y talleres; Astrales: arcos minerales y energía contenida. Cada uno recibe variantes de asentamiento, civiles, defensa, transporte y misión. La diferencia no se limita a recolorear uniformes. El catálogo avisa de revelaciones sobre pueblos ocultos.
 
@@ -120,7 +120,7 @@ Los seis pueblos existentes conservan sus condiciones de contacto. Humanos: made
 | Barco | Astillero, puerto y corredor marítimo trazado | Profundidad, costa, corriente y clima | Provisiones/combustible; calado y atraque |
 | Avión | Pista, terminal y corredor aéreo | Relieve, aproximación, viento y obstáculos | Combustible/energía; pista y carga útil |
 
-Un corredor marítimo o aéreo es un camino navegable estudiado, no una carretera sobre el océano o en el cielo. Un transbordo necesita terminal y almacén; la carga llega al destino solo al completar el viaje. El laboratorio calcula requisitos y presupuestos; los convoyes de campaña 0.8 conservan sus reglas hasta integrar la nueva ingeniería.
+Un corredor marítimo o aéreo es un camino navegable estudiado, no una carretera sobre el océano o en el cielo. Un transbordo necesita terminal y almacén; la carga llega al destino solo al completar el viaje. La campaña 0.10 usa estudios, redes y vehículos propios; las rutas antiguas conservan la carga en tránsito y después esperan su sustitución.
 
 ## 7. Estudios, presupuesto, puentes y defensas
 
@@ -134,7 +134,7 @@ Para un puente, el laboratorio usa una viga equivalente simplemente apoyada: M =
 
 Soportes múltiples reducen la luz, pero cada pila tiene coste y necesita lecho apto; no se eliminan las cimentaciones por aumentar el número de apoyos. Vida deseada y tráfico no son el mismo campo. Inspección y reparación recuperan condición; una reparación no aumenta automáticamente el límite de carga. Las catástrofes pueden cerrar la estructura y requerir un estudio nuevo.
 
-Una defensa necesita visibilidad, campo de tiro, suelo, distancia de seguridad, suministro, operador y acceso de mantenimiento. Torres tempranas consumen provisiones; armas industriales requieren munición y sensores; defensas energéticas, energía y refrigeración. El informe explica sectores ciegos y contramedidas. El laboratorio permite comparar emplazamientos; en campaña la torre actual aún usa sus reglas 0.8.
+Una defensa necesita visibilidad, campo de tiro, suelo, distancia de seguridad, suministro, operador y acceso de mantenimiento. Torres tempranas consumen provisiones; armas industriales requieren munición y sensores; defensas energéticas, energía y refrigeración. El informe explica sectores ciegos y contramedidas. La campaña exige estudio y suministros a las defensas nuevas. Las torres importadas conservan sus reglas anteriores.
 
 ## 8. Interfaz común
 
@@ -146,4 +146,6 @@ Evitar una imitación literal de cuatro interfaces distintas: el estándar reún
 
 Un activo se acepta si se entiende a escala de móvil, tiene entrada y huella coherentes, distingue sus diez niveles, conserva identidad al girar, comparte iluminación con el terreno y expone su utilidad. La captura del visor y el modelo deben corresponder al mismo identificador, era y nivel. La generación de láminas debe producir una imagen por edificio con los diez niveles, con un manifiesto de cobertura.
 
-El catálogo diferencia explícitamente: **Campaña** (reglas actuales), **Plano** (función y modelo de expansión), **Laboratorio** (cálculos ejecutables sin construir). No se presentarán las futuras cadenas económicas, nuevos puestos NPC o ingeniería de carga como sistemas ya activos. El despliegue de arte no debe borrar partidas ni cambiar costes silenciosamente. Los atlas viejos se mantienen para compatibilidad.
+El catálogo 0.10 contiene activos de **Campaña**; **Laboratorio** son cálculos independientes de una partida. Se activaron producción local, estudios, obras, defensa, convoyes propios y visitantes. El motor conserva partidas y atlas anteriores. Los costes nuevos se muestran antes de confirmarlos.
+
+Límites actuales: el suelo del estudio es una estimación determinista simplificada, las vías se dimensionan por celdas (4 m/celda y 1 m/altura para el cálculo), y no se resuelven drenaje, congestión completa, oleaje, viento, hidráulica o navegación submarina en otro estrato. Los submarinos navegan en superficie en la simulación actual. Las rutas locales requieren tramos estudiados de hasta 180 casillas; las interinsulares usan la cartografía de mapas ya recorridos y un estudio de terminal. Las unidades y los edificios comparten módulos de era. Los NPC tienen encargos económicos con moralidad, no conversaciones generativas.

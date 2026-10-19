@@ -4,6 +4,20 @@ Juego original de estrategia y supervivencia del ecosistema Auralis para web, An
 
 [Jugar](https://oscard0823.github.io/auralis-frontier/) · [Descargar Android y Windows](https://github.com/OscarD0823/auralis-frontier/releases/latest) · [Ecosistema Auralis](https://oscard0823.github.io/Pagina-Principal/)
 
+## Alpha 0.10: el estándar entra en la campaña
+
+- **64 edificios funcionales y 33 unidades reclutables** con modelos 3D propios, diez niveles/equipos y aperturas por era. Los edificios incorporan adornos de los pueblos ya desbloqueados; los enclaves remotos muestran su arquitectura.
+- **Cadenas de producción con operarios**: aserradero, carpintería, molino/panadería, ganadería, cantera, caza/pesca, herrería, fundición, taller, medicinas, munición y saneamiento. Los insumos se trasladan desde almacenes y la producción queda en el edificio. Un colono puede recoger diez bienes y entregarlos; los convoyes mueven lotes mayores.
+- **Suministros → Instalaciones / Ingeniería / Convoyes**, con inventarios locales, recetas, personal y estado de trabajo. Se mantienen cinco accesos principales. Los grados de equipo se mejoran desde Órdenes.
+- **Estudios sobre terreno explorado**: trabajador físico, gasto de alimentos/agua y registro de las cotas. Cambiar el terreno invalida el estudio. Carreteras y ferrocarriles requieren trazado, estudio vigente, presupuesto y construcción por tramos; ya no se colocan puentes o vías instantáneamente.
+- **Puentes por carga y vida útil**: vigas, apoyos, luz, peso de vehículo+carga, flecha, tensión, suelo, exposición y fatiga. Acero/hormigón requieren ingeniería y minerales estudiados. Las uniones de los primeros puentes de madera sustituyen herrajes por madera. Condición, cierre, inspección y reparación conservando la capacidad nominal.
+- **Vehículos propios**: caballos, carretas, camiones, trenes, cargueros, hidroalas y aeronaves. Redes continuas y terminales compatibles; carga real, consumo por salida, entrega y regreso. Una vía rota o un puente cerrado detiene el convoy. La destrucción pierde vehículo y carga; no aparece un reemplazo gratuito.
+- **Rutas entre islas con carguero propio**, terminal estudiada y conexiones ya recorridas. Ida, descarga y vuelta, con daño por catástrofes. Las rutas antiguas completan su carga pendiente y esperan ser reemplazadas por vehículos propios.
+- **Defensas estudiadas y abastecidas**: guarnición, provisiones/munición, línea de visión y objetivos terrestres/navales/aéreos; sensores para antiaéreas y energía para escudos. Se conservan las torres de partidas anteriores bajo sus reglas originales.
+- **12 visitantes NPC** junto a sus instalaciones: peticiones, pago en áureos, moralidad y tiempo de espera. Acoger refugiados añade colonos si hay capacidad. Graneros, refugios, archivo, faros, sensores, señales, depósitos de combustible y servicios tienen efectos jugables.
+
+Se conservan semilla, terreno, unidades e inventarios de partidas anteriores. Los seis nuevos bienes empiezan en cero; no se regalan recursos por migrar. La simulación de transporte e ingeniería sigue siendo un modelo de juego: no calcula tráfico urbano completo, navegación hidrodinámica, viento o estructuras reales. Los corredores locales se estudian hasta 180 casillas por tramo; la red puede construirse en varios tramos. Los mapas inactivos resumen trabajo y reservas cada 30 segundos; el cierre del juego detiene el reloj.
+
 ## Alpha 0.9: un estándar antes de ampliar el mundo
 
 - [Libro de diseño 3D](https://oscard0823.github.io/auralis-frontier/codex.html): análisis acumulativo de Clash of Clans, Cities: Skylines, Social Wars y Age of Empires; [estándar completo](DESIGN-STANDARD.md) con auditoría de los doce atlas y contratos visuales/funcionales.

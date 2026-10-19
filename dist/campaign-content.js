@@ -1,0 +1,36 @@
+import {ADDITIONAL_BUILDINGS} from './blueprints.js';
+export const PROCESSED_STOCK={boards:'Tablones',flour:'Harina',parts:'Repuestos',medicine:'Medicinas',ammo:'Munición',leather:'Cuero'};
+export const NEW_STRUCTURES=Object.fromEntries(ADDITIONAL_BUILDINGS.map(([id,name,era,category,shape,inputs,outputs,staff,access,description])=>[id,{name,era:id==='workshop'?5:era,category,art:['military','science'].includes(category)?'barracks':'depot',size:['station','cargoharbor','cargoterminal','engineering','shipwright'].includes(id)?3:2,hp:category==='military'?1400:650+era*35,time:120+era*30,cost:{wood:80+era*10,stone:70+era*12,...(era>=4?{iron:30+era*8}:{})},description,expansion:true,inputs,outputs,staff,access}]));
+export const RECIPES={
+ sawmill:{input:{wood:5},output:{boards:3},seconds:35},carpenter:{input:{boards:3},output:{parts:2},seconds:50},
+ mill:{input:{food:3},output:{flour:3},seconds:40},bakery:{input:{flour:3,water:2,wood:1},output:{food:6},seconds:60},
+ livestock:{input:{food:3,water:3},output:{food:4,leather:1},seconds:90},smithy:{input:{iron:3,coal:1},output:{parts:3},seconds:65},
+ foundry:{input:{iron:5,coal:3},output:{parts:7},seconds:70,power:2},workshop:{input:{boards:2,iron:2},output:{parts:4},seconds:65},
+ munitions:{input:{iron:3,coal:2},output:{ammo:12},seconds:80,power:2},clinic:{input:{food:2,water:3},output:{medicine:2},seconds:80},
+ fishery:{source:'food',output:{food:2},seconds:35,coast:true},huntinglodge:{source:'food',output:{food:2,leather:1},seconds:65},quarry:{source:'stone',output:{stone:3},seconds:45},
+ sewage:{input:{water:2,coal:1},output:{water:3},seconds:70,power:1}
+};
+export const DEFENSES={tower:{range:9,damage:35,target:'ground',cost:'food',use:1},ballista:{range:11,damage:55,target:'ground',cost:'boards',use:1},bunker:{range:7,damage:45,target:'ground',cost:'ammo',use:1},cannon:{range:14,damage:100,target:'ground',cost:'ammo',use:2,splash:2},antiair:{range:15,damage:100,target:'air',cost:'ammo',use:2,power:3},coastal:{range:18,damage:140,target:'naval',cost:'ammo',use:3,splash:2},shield:{range:8,power:5,shield:true}};
+export const SERVICES={granary:'Reduce el consumo de alimento a una unidad por salida.',stable:'Permite caballos de carga; cada animal cuenta como unidad real.',caravan:'Terminal de carretas y punto de entrega.',surveyor:'Reduce el tiempo de topografía con un operario.',engineering:'Habilita proyectos de acero y dimensionamiento avanzado.',geology:'Mejora la prospección y reduce el tiempo de estudios.',bridgeyard:'Acelera las obras y reparaciones de puentes.',maintenance:'Inspecciona y repara redes con repuestos.',signal:'Reduce el tiempo entre salidas de convoyes.',station:'Terminal de ferrocarril y transbordo.',freightterminal:'Terminal de camiones y transbordo.',cargoharbor:'Terminal marítima con almacenamiento local.',shipwright:'Construye buques especializados y repara flota próxima.',lighthouse:'Amplía la visibilidad de la costa a 14 casillas.',hangar:'Repara aeronaves próximas con repuestos.',cargoterminal:'Terminal de carga aérea.',fueltank:'Reduce consumo de combustible de convoyes hasta un 20%.',radar:'Amplía detección y habilita apoyo antiaéreo.',firestation:'Repara daños de edificios próximos con agua y repuestos.',archive:'Acelera análisis de materiales con un operario.',refuge:'Añade plazas y permite acoger familias.',clinic:'Produce medicinas y atiende unidades próximas.'};
+export const LOGISTIC_TYPES={packhorse:{mode:'horse',mass:.5,capacity:12},wagon:{mode:'cart',mass:.7,capacity:30},truck:{mode:'truck',mass:8,capacity:100},freighttrain:{mode:'train',mass:60,capacity:400},cargoplane:{mode:'plane',mass:25,capacity:150},transport:{mode:'ship',mass:90,capacity:250},hydrofoil:{mode:'ship',mass:15,capacity:120},orbitalcargo:{mode:'plane',mass:30,capacity:450}};
+export const NEW_TROOPS={
+ packhorse:{name:'Caballo de carga',era:2,facility:'stable',hp:140,speed:2.3,time:150,cost:{food:80,wood:20},logistic:true,mass:.5},
+ wagon:{name:'Carreta',era:3,facility:'caravan',hp:220,speed:1.7,time:240,cost:{boards:50,parts:10,food:50},logistic:true,mass:.7},
+ truck:{name:'Camión de carga',era:14,facility:'freightterminal',hp:450,speed:3,time:420,cost:{iron:180,parts:60,oil:70},logistic:true,mass:8},
+ freighttrain:{railOnly:true,name:'Tren de carga',era:12,facility:'station',hp:900,speed:3.3,time:600,cost:{iron:400,parts:100,coal:100},logistic:true,mass:60},
+ cargoplane:{name:'Avión carguero',era:16,facility:'cargoterminal',hp:600,speed:5,time:900,cost:{iron:500,parts:150,oil:200},logistic:true,flying:true,mass:25},
+ surveyor:{name:'Topógrafo',era:1,facility:'surveyor',hp:95,speed:1.4,time:150,cost:{food:50,wood:40},civilian:true},
+ engineer:{name:'Ingeniero',era:12,facility:'engineering',hp:110,speed:1.4,time:240,cost:{food:60,parts:20,iron:30},civilian:true},
+ medic:{name:'Sanitario de campo',era:3,facility:'clinic',hp:100,speed:1.5,time:180,cost:{food:50,medicine:10},civilian:true},
+ siege:{name:'Ariete de asedio',era:5,facility:'workshop',hp:850,speed:.8,damage:65,range:1.5,time:480,cost:{boards:180,iron:80,parts:35},mass:5},
+ destroyer:{name:'Destructor naval',era:15,facility:'shipwright',hp:1700,speed:3.3,damage:95,range:12,time:1000,cost:{iron:700,parts:150,oil:220},naval:true,carrier:8},
+ submarine:{name:'Submarino',era:17,facility:'shipwright',hp:900,speed:2.9,damage:110,range:10,time:1000,cost:{iron:600,parts:180,oil:180},naval:true},
+ hydrofoil:{name:'Hidroala eléctrica',era:20,facility:'shipwright',hp:750,speed:4.2,time:800,cost:{iron:400,parts:160,lithium:80},naval:true,logistic:true,carrier:12},
+ oceanresearch:{name:'Buque oceanográfico',era:19,facility:'shipwright',hp:1000,speed:2.5,time:900,cost:{iron:450,parts:120,silica:100},naval:true,carrier:6},
+ orbitalcargo:{name:'Carguero orbital',era:28,facility:'starforge',hp:2000,speed:6,time:1500,cost:{titanium:400,iridium:120,parts:300},flying:true,logistic:true}
+};
+for(const[id,u]of Object.entries(NEW_TROOPS))Object.assign(u,{art:['packhorse'].includes(id)?'cavalry':u.naval?'transport':u.flying?'helicopter':u.civilian?'ranger':'jeep',damage:u.damage||0,range:u.range||0});
+export const NPC_ROLES={
+ merchant:{name:'Comerciante',home:'market',cost:{wood:30},reward:30,morale:1},surveyor:{name:'Topógrafo',home:'surveyor',cost:{food:15,water:15},reward:24,morale:2},geologist:{name:'Geólogo',home:'geology',cost:{stone:25},reward:40,morale:2},engineer:{name:'Ingeniero',home:'engineering',cost:{parts:10},reward:60,morale:3},builder:{name:'Constructor',home:'carpenter',cost:{boards:20,water:10},reward:28,morale:2},carrier:{name:'Arriero',home:'stable',cost:{food:20,water:20},reward:32,morale:3},medic:{name:'Sanitario',home:'clinic',cost:{medicine:5},reward:35,morale:5},refugee:{name:'Familia refugiada',home:'refuge',cost:{food:40,water:35},reward:10,morale:8},diplomat:{name:'Emisario',home:'embassy',cost:{food:30},reward:35,morale:3},explorer:{name:'Explorador',home:'camp',cost:{food:15,water:10},reward:20,morale:2},sailor:{name:'Capitán',home:'dock',cost:{boards:25,food:20},reward:50,morale:3},warden:{name:'Guardián del enclave',home:'tower',cost:{food:30},reward:30,morale:4}
+};
+export const RESOURCE_MASS={wood:.012,stone:.025,iron:.035,boards:.008,parts:.015,food:.003,water:.001,oil:.005};
