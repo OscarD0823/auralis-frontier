@@ -4,6 +4,17 @@ Juego original de estrategia y supervivencia del ecosistema Auralis para web, An
 
 [Jugar](https://oscard0823.github.io/auralis-frontier/) · [Descargar Android y Windows](https://github.com/OscarD0823/auralis-frontier/releases/latest) · [Ecosistema Auralis](https://oscard0823.github.io/Pagina-Principal/)
 
+## Alpha 0.9: un estándar antes de ampliar el mundo
+
+- [Libro de diseño 3D](https://oscard0823.github.io/auralis-frontier/codex.html): análisis acumulativo de Clash of Clans, Cities: Skylines, Social Wars y Age of Empires; [estándar completo](DESIGN-STANDARD.md) con auditoría de los doce atlas y contratos visuales/funcionales.
+- **64 edificios**: 23 de campaña y 41 planos de expansión. **33 tropas y transportes**, 12 roles NPC y seis pueblos, cada uno con función, acceso y origen definidos. Los planos todavía no añaden mecánicas a la partida.
+- Diez modelos por activo, selector de 40 eras, ocho lenguajes arquitectónicos, giro, buscador y exportación PNG. Los módulos se comparten entre eras; no son 400 esculturas únicas por edificio.
+- Progresión estructural de los edificios existentes: accesos, apoyos, pórticos, módulos funcionales y refuerzos. Las miniaturas respetan nivel y familia de era. La ficha de mejora compara visualmente el modelo actual y el siguiente.
+- **Laboratorio independiente de ingeniería**: caballos, carretas, camiones, trenes, barcos y aviones; excavación, firme y material aprovechable; puentes por luz, sección, carga, apoyos, suelo, tráfico y exposición; estudio de defensas. Sus cálculos no construyen ni gastan recursos de campaña.
+- Dos láminas originales de dirección artística; prompts y procedencia en [ARTWORK-STANDARD.md](ARTWORK-STANDARD.md). El paquete de diseño exporta 115 láminas y 1150 imágenes individuales en una era representativa por activo.
+
+Las partidas y las reglas económicas de campaña se conservan. Ingeniería, edificios de expansión, nuevos roles NPC y grados de equipo están identificados como diseños o laboratorio, a la espera de su integración jugable.
+
 ## Alpha 0.8: el mapa primero
 
 - **Interfaz contextual**: cinco accesos principales; gestión, cámara, catálogo e inspector se despliegan cuando hacen falta. Menús adaptados a móvil, con edificios y tropas filtrados por categoría y era.
@@ -86,6 +97,8 @@ Requiere Node.js 22 o posterior.
 npm ci
 npm run dev
 npm test
+node scripts/qa-design.mjs
+node scripts/export-design.mjs
 node scripts/qa-clean-ui.mjs
 node scripts/qa-3d-controls.mjs
 node scripts/qa-3d.mjs

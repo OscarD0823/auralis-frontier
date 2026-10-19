@@ -1,3 +1,4 @@
+import {applyBuildingLevel} from './building-levels.js';
 // Original, articulated geometry. No character or building in the world is a billboard.
 import * as T from './vendor/three.module.js';
 const P=Math.PI;
@@ -26,7 +27,7 @@ function home(g,M,{x=0,z=0,w=1.5,d=1.25,h=.85,roof=M.roof,modern=false}){
 function turret(g,M,x,z,tall=1.6){cyl(g,M.stone,x,tall/2,z,.37,tall);cyl(g,M.stone,x,tall,z,.45,.18);for(let i=0;i<8;i++){const a=i*P/4;box(g,M.stone,x+Math.cos(a)*.38,tall+.2,z+Math.sin(a)*.38,.15,.28,.15,0,-a);}box(g,M.darkwood,x,tall*.7,z+.37,.09,.28,.02);}
 export function buildingModel(type,tier=0,level=1,size=2,M){const g=new T.Group(),modern=tier>=12,future=tier>=23,roof=modern?M.roofdark:M.roof;
  // The foundation sits inside the footprint, with a dirt apron instead of a flat picture edge.
- cyl(g,M.earth,0,-.005,0,size*.7,.09);box(g,M.stone,0,.045,0,size*.88,.1,size*.88);
+ cyl(g,M.earth,0,-.025,0,size*.5,.045);box(g,M.stone,0,.015,0,size*.78,.055,size*.78);
  if(type==='well'){cyl(g,M.stone,0,.23,0,.33,.44);cyl(g,M.black,0,.459,0,.24,.012);for(const x of[-.35,.35])box(g,M.wood,x,.75,0,.075,1.1,.075);part(g,'roof',roof,0,1.16,0,.95,.65,.85);cyl(g,M.wood,0,.93,0,.055,.75,P/2);beam(g,M.darkwood,[0,.92,0],[0,.46,0],.018);cyl(g,M.iron,.3,.93,0,.1,.04,P/2);}
  else if(type==='farm'||type==='greenhouse'){
   box(g,M.earth,0,.11,0,1.76,.14,1.76);for(let a=0;a<7;a++)for(let b=0;b<6;b++){const x=-.7+a*.23,z=-.65+b*.24;box(g,type==='farm'?M.wheat:M.leaf,x,.25,z,.1,.25+((a*3+b)%4)*.025,.08);}
@@ -61,7 +62,12 @@ export function buildingModel(type,tier=0,level=1,size=2,M){const g=new T.Group(
   else if(type==='house'){box(g,M.stone,.43,1.25,-.25,.23,.9,.23);barrel(g,M,-.73,.52);}
  }
  if(future&&!['lab','fusion','starforge'].includes(type)){box(g,M.glow,0,.17,size*.43,size*.75,.035,.025);for(const x of[-size*.4,size*.4])box(g,M.metal,x,.35,-size*.4,.12,.6,.12);}
- if(level>1)for(let i=0;i<Math.min(4,Math.floor(level/2));i++)box(g,level===10?M.gold:M.stone,-.36+i*.24,.13,size*.45,.17,.13,.15);
+ if(tier===0)g.traverse(o=>{if(o.isMesh){if(o.material===M.plaster)o.material=M.wood;else if(o.material===M.roof)o.material=M.cloth;}});
+ else if(tier>=4&&tier<12)g.traverse(o=>{if(o.isMesh){if(o.material===M.roof)o.material=M.roofdark;if(tier<8&&o.material===M.plaster)o.material=M.stone;}});
+ if(tier>=8&&tier<12){cyl(g,M.gold,size*.3,1.25,-size*.3,.045,.8);}
+ if(tier>=15&&tier<23){box(g,M.glass,0,.6,-size*.38,size*.5,.28,.025);box(g,M.metal,-size*.3,.8,size*.2,.18,.6,.18);}
+ if(tier>=30){for(const side of[-1,1])beam(g,M.metal,[side*size*.35,.2,-size*.32],[side*size*.18,2.15,-size*.32],.065);box(g,M.glow,0,2.12,-size*.32,size*.36,.06,.06);}
+ applyBuildingLevel(g,M,type,tier,level,size,part);
  return g;
 }
 export function natureModel(kind,seed,M,resource=null,biome=0){const g=new T.Group(),r=((seed*13)%97)/97;

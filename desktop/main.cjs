@@ -3,7 +3,7 @@ const path=require('node:path');
 const {pathToFileURL}=require('node:url');
 protocol.registerSchemesAsPrivileged([{scheme:'auralis',privileges:{standard:true,secure:true,supportFetchAPI:true,stream:true}}]);
 let window;
-const externalAllowed=href=>{try{const u=new URL(href);return u.protocol==='https:'&&['github.com','oscard0823.github.io'].includes(u.hostname);}catch{return false;}};
+const externalAllowed=href=>{try{const u=new URL(href);return u.protocol==='https:'&&['github.com','oscard0823.github.io','supercell.com','www.paradoxinteractive.com','www.ageofempires.com','www.devuego.es'].includes(u.hostname);}catch{return false;}};
 app.whenReady().then(()=>{
   const root=path.resolve(__dirname,'../dist');
   protocol.handle('auralis',request=>{
