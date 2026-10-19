@@ -46,12 +46,12 @@ export function sparseFog(size,serialized=null){
 export function localPath(map,start,goal,spec={},limit=5000){
   const size=map.size,sx=Math.floor(start.x),sy=Math.floor(start.y),dist=Math.hypot(goal.x-start.x,goal.y-start.y),span=Math.min(48,dist),gx=Math.max(0,Math.min(size-1,Math.floor(sx+(goal.x-start.x)*span/Math.max(1,dist)))),gy=Math.max(0,Math.min(size-1,Math.floor(sy+(goal.y-start.y)*span/Math.max(1,dist))));
   const startKey=sy*size+sx,open=[],cost=new Map([[startKey,0]]),parent=new Map(),closed=new Set();let best=startKey,bestDist=Infinity,expanded=0;
-  const heuristic=(x,y)=>Math.abs(gx-x)+Math.abs(gy-y);
+  const heuristic=(x,y)=>{const a=Math.abs(gx-x),b=Math.abs(gy-y);return Math.max(a,b)+(Math.SQRT2-1)*Math.min(a,b);};
   function push(v){let i=open.length;open.push(v);while(i){const p=(i-1)>>1;if(open[p].f<=v.f)break;open[i]=open[p];i=p;open[i]=v;}}
   function pop(){const v=open[0],tail=open.pop();if(open.length){open[0]=tail;let i=0;while(i*2+1<open.length){let j=i*2+1;if(j+1<open.length&&open[j+1].f<open[j].f)j++;if(open[j].f>=tail.f)break;open[i]=open[j];i=j;open[i]=tail;}}return v;}
   push({i:startKey,f:heuristic(sx,sy)});
   while(open.length&&expanded<limit){const {i}=pop();if(closed.has(i))continue;closed.add(i);expanded++;const x=i%size,y=Math.floor(i/size),d=heuristic(x,y);if(d<bestDist){bestDist=d;best=i;}if(x===gx&&y===gy)break;
-    for(const [a,b]of[[x+1,y],[x,y+1],[x-1,y],[x,y-1]]){if(a<0||b<0||a>=size||b>=size||!map.passable(a,b,spec)||Math.abs(a-sx)>64||Math.abs(b-sy)>64)continue;const k=b*size+a,from=map.tile(x,y),to=map.tile(a,b);if(!spec.flying&&!spec.naval&&Math.abs(to.h-from.h)>1)continue;const next=cost.get(i)+(['path','rail','bridge'].includes(to.kind)?.7:to.kind==='forest'?1.6:1);if(next<(cost.get(k)??Infinity)){cost.set(k,next);parent.set(k,i);push({i:k,f:next+heuristic(a,b)*.7});}}
+    for(const [a,b]of[[x+1,y],[x,y+1],[x-1,y],[x,y-1],[x+1,y+1],[x-1,y+1],[x+1,y-1],[x-1,y-1]]){if(a<0||b<0||a>=size||b>=size||!map.passable(a,b,spec)||Math.abs(a-sx)>64||Math.abs(b-sy)>64)continue;const diagonal=a!==x&&b!==y;if(diagonal&&(!map.passable(a,y,spec)||!map.passable(x,b,spec)))continue;const k=b*size+a,from=map.tile(x,y),to=map.tile(a,b);if(!spec.flying&&!spec.naval&&(Math.abs(to.h-from.h)>1||diagonal&&(Math.abs(map.tile(a,y).h-from.h)>1||Math.abs(map.tile(x,b).h-from.h)>1)))continue;const next=cost.get(i)+(['path','rail','bridge'].includes(to.kind)?.7:to.kind==='forest'?1.6:1)*(diagonal?Math.SQRT2:1);if(next<(cost.get(k)??Infinity)){cost.set(k,next);parent.set(k,i);push({i:k,f:next+heuristic(a,b)*.7});}}
   }
   const path=[];let k=best;while(k!==startKey&&parent.has(k)){path.push({x:k%size+.5,y:Math.floor(k/size)+.5});k=parent.get(k);}return {path:path.reverse(),expanded,reached:best===gy*size+gx};
 }

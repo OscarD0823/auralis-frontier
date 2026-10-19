@@ -4,6 +4,16 @@ Juego original de estrategia y supervivencia del ecosistema Auralis para web, An
 
 [Jugar](https://oscard0823.github.io/auralis-frontier/) · [Descargar Android y Windows](https://github.com/OscarD0823/auralis-frontier/releases/latest) · [Ecosistema Auralis](https://oscard0823.github.io/Pagina-Principal/)
 
+## Alpha 0.8: el mapa primero
+
+- **Interfaz contextual**: cinco accesos principales; gestión, cámara, catálogo e inspector se despliegan cuando hacen falta. Menús adaptados a móvil, con edificios y tropas filtrados por categoría y era.
+- **Construcción con vista previa 3D**, posición arrastrable, giro de 90°, presupuesto y confirmación. La previsualización y su cancelación no gastan materiales. Las obras aparecen sobre su huella real con cimientos y andamios.
+- **Mejoras desde el edificio o el catálogo**, con modelo central, diez niveles, prestaciones actuales y siguientes, materiales pendientes y acción principal única.
+- **Caminos conectados** con distinto ancho y acabado, rectas, curvas, puentes y presupuesto previo. Conservan el trabajo por tramos de los colonos.
+- **Ejército con destinos individuales en línea, columna, bloque o dispersión**, rutas diagonales que respetan esquinas y desniveles, separación entre unidades, comportamiento defensivo/ofensivo/pasivo y puntos de reunión para nuevos reclutas. Selección por área disponible también con el dedo.
+
+Se conservan las partidas anteriores. El movimiento usa rutas locales acotadas; las formaciones asignan destinos y no simulan un frente rígido durante toda la marcha. Diseño, referencias y controles: [DESIGN-UI.md](DESIGN-UI.md).
+
 ## Alpha 0.7: mundo 3D y una economía visible
 
 - Escenario en **3D real con WebGL 2**: edificios, naturaleza, colonos, ejército, barcos y vehículos hechos con geometría original. Cámara giratoria e inclinación, iluminación común, sombras y texturas de materiales coherentes.
@@ -76,6 +86,8 @@ Requiere Node.js 22 o posterior.
 npm ci
 npm run dev
 npm test
+node scripts/qa-clean-ui.mjs
+node scripts/qa-3d-controls.mjs
 node scripts/qa-3d.mjs
 node scripts/qa-horizons.mjs
 node scripts/capture-horizons.mjs
