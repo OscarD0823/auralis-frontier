@@ -4,6 +4,14 @@ Juego original de estrategia y supervivencia del ecosistema Auralis para web, An
 
 [Jugar](https://oscard0823.github.io/auralis-frontier/) · [Descargar Android y Windows](https://github.com/OscarD0823/auralis-frontier/releases/latest) · [Ecosistema Auralis](https://oscard0823.github.io/Pagina-Principal/)
 
+## Alpha 0.12: modelado con más volumen
+
+- Tejados con 144 tejas en relieve y tela independiente para tiendas; ayuntamiento con torres redondas, arcos, aleros y sillares.
+- Personajes con torsos curvos, codos y rodillas articulados; chasis inclinados, torretas redondeadas y cascos navales por secciones.
+- Copas orgánicas, pinos por ramas, espigas y vegetación con viento; materiales con mapas normales, reflejos de entorno, faroles y luz nocturna.
+- Orillas inclinadas, agua somera y espuma según la costa descubierta; cámara inicial más cercana. Se mantienen partidas, sonido y carga del mapa por sectores.
+- [Detalles y validación del modelado](GRAPHICS-v12.md).
+
 ## Alpha 0.11: un mundo con más volumen y sonido
 
 - **Edificios y tropas 3D renovados**: masas biseladas, tejados a cuatro aguas, ayuntamiento con campanario, casas con porche y buhardilla, almacenes abiertos y cuarteles con torre. Ventanas, troncos, carros de mineral, antenas, vehículos, orugas, cascos y rostros usan geometría y materiales compartidos.

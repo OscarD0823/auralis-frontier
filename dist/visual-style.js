@@ -1,3 +1,4 @@
+import {sculptBuilding} from './sculpted-style.js';
 import * as T from './vendor/three.module.js';
 const PI=Math.PI;
 // A hipped, overhanging roof reads as a solid volume from every camera angle.
@@ -58,7 +59,7 @@ export function decorateBuilding(g,id,era,level,size,M,part){const b=(m,x,y,z,w,
  // Bedrock, grass and supply props use a fixed per-type pattern, also visible in the catalogue.
  let seed=0;for(const ch of id)seed=(seed*31+ch.charCodeAt(0))>>>0;
  for(let i=0;i<5;i++){const a=(i*2.4+seed%17),x=Math.cos(a)*size*.45,z=Math.sin(a)*size*.44;if(z>size*.27&&Math.abs(x)<.34)continue;part(g,'rock',M.stone,x,.035,z,.08+(i%2)*.03,.06,.07,0,a);if(i%2===0){part(g,'ball',M.leaf,x,.09,z,.11,.12,.1);part(g,'ball',M.leaflight,x+.06,.14,z,.08,.08,.08);}}
- g.userData.visualRevision=11;
+ sculptBuilding(g,id,era,level,size,M,part);g.userData.visualRevision=11;
 }
 export function decorateUnit(g,type,M,part,era=0){const j=g.userData.joints;if(!j)return;const b=(parent,m,x,y,z,w,h,d,rz=0)=>part(parent,'box',m,x,y,z,w,h,d,0,0,rz);
  if(j.body){const p=j.body,robot=['guardian','mecha'].includes(type),civil=type==='settler',torso=p.children[0],belt=p.children[1],head=p.children[2],cap=p.children[3];if(torso?.isMesh)torso.scale.set(.32,.36,.23);if(belt?.isMesh)belt.scale.set(.34,.06,.25);if(head?.isMesh)head.scale.set(.145,.165,.135);if(cap?.isMesh)cap.scale.set(.155,.08,.14);

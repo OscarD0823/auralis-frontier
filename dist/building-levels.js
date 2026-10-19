@@ -1,7 +1,7 @@
 // Shared structural progression: same footprint, ten visibly different assemblies.
 export function applyBuildingLevel(g,M,type,era,level,size,part){
  const box=(mat,x,y,z,a,b,c,rx=0,ry=0,rz=0)=>part(g,'box',mat,x,y,z,a,b,c,rx,ry,rz),cyl=(mat,x,y,z,r,h)=>part(g,'cylinder',mat,x,y,z,r,h,r),edge=size*.39,metal=era>=12?M.metal:M.wood,structural=era>=12?M.iron:M.stone;
- level=Math.max(1,Math.min(10,Math.floor(level)));const heightScale=.68+level*.042;g.userData.designLevel=level;g.userData.levelFeatures=['Núcleo'];
+ level=Math.max(1,Math.min(10,Math.floor(level)));const heightScale=.9+level*.025;g.userData.designLevel=level;g.userData.levelFeatures=['Núcleo'];
  if(level>=2){box(M.stone,0,.08,edge,.46,.1,.22);box(M.wood,-edge,.12,edge*.7,.22,.22,.22);g.userData.levelFeatures.push('Acceso');}
  if(level>=3){for(const x of[-edge,edge])for(const z of[-edge,edge]){box(structural,x,.23,z,.13,.42,.13);box(M.stone,x,.05,z,.22,.08,.22);}g.userData.levelFeatures.push('Cimiento');}
  if(level>=4){for(const x of[-.23,.23])box(metal,x,.52,edge,.045,.88,.045);box(era>=12?M.roofdark:M.wood,0,.98,edge-.06,.65,.07,.38);g.userData.levelFeatures.push('Pórtico');}
