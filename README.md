@@ -4,6 +4,20 @@ Juego original de estrategia y supervivencia del ecosistema Auralis para web, An
 
 [Jugar](https://oscard0823.github.io/auralis-frontier/) · [Descargar Android y Windows](https://github.com/OscarD0823/auralis-frontier/releases/latest) · [Ecosistema Auralis](https://oscard0823.github.io/Pagina-Principal/)
 
+## Alpha 0.6: un pueblo que se convierte en imperio
+
+- **40 eras ampliables y 10 niveles por era**, desde un colono hasta tecnología cósmica. Los edificios tienen un nivel y un plano tecnológico: adaptar barrios antiguos cambia sus prestaciones y su aspecto.
+- **Mejoras con constructor y minerales estudiados**. Comparación de prestaciones, precio y tiempo en una ficha de pergamino; menús de gobierno con madera y bronce. Completar capital y edificios al máximo da un 50% de descuento sobre el coste base de avance. Adelantar la era cuesta 12 veces el precio base y tarda el doble.
+- **Comida, agua y bienestar para toda la población**, manantial inicial, pozos, cisternas, plantas de agua, granjas e invernaderos con operarios. Carencias prolongadas dañan a los habitantes. Industria con balance eléctrico; centrales mejorables y fusión.
+- **Oficios continuos para colonos**, sin retirar el control manual: recolectores, aguadores, agricultores, operarios y mineros de galerías. Provisiones físicas en los barcos para abastecer expediciones y nuevas colonias.
+- **15 materiales estudiables en tres fases**, con muestras reales de las excavaciones. Los análisis revelan usos, mejoran extracción y abaratan mejoras.
+- **Seis pueblos**, cinco desbloqueados mediante contactos raros o misiones de exploración, minería, alianzas y ciencia. Selección de pueblo al reclutar, con capacidades y necesidades diferentes.
+- **Moralidad de −100 a +100**, reputación, políticas de racionamiento, jornada y conservación; refugiados, caravanas, restauración, guerra, integración y saqueo con consecuencias persistentes.
+- **Caminos propios rectos o curvos**, presupuesto previo, puentes, tres grados de vía y construcción por tramos. Cancelar recupera los materiales sin utilizar.
+- **23 edificios y 19 unidades**. Guardianes energéticos, mecas, tejedores cuánticos, naves y leviatanes complementan al ejército anterior. Las incursiones NPC también progresan y gastan sus reservas.
+
+Las partidas de Horizontes 0.4–0.5 se migran conservando el mundo y el progreso. La campaña clásica sigue separada. Las reglas y sus límites están en [DESIGN-CIVILIZATION.md](DESIGN-CIVILIZATION.md); el nuevo atlas original y su prompt, en [ARTWORK-v6.md](ARTWORK-v6.md).
+
 ## Alpha 0.5: arte de la civilización
 
 Horizontes incorpora cinco atlas originales: edificios de piedra y madera con tejados de paja y pizarra; colonos, lanceros, arqueras y caballería con poses de trabajo y movimiento; árboles, rocas y recursos; barcos, trenes y aviones; y materiales de terreno. El suelo usa texturas continuas ancladas al mundo, con caminos conectados, agua, costas, sombras de contacto y niebla suavizada. Los desniveles conservan sus paredes de roca, sin bordes de cubo alrededor de cada casilla plana.
@@ -55,6 +69,7 @@ npm test
 node scripts/qa-horizons.mjs
 node scripts/capture-horizons.mjs
 node scripts/qa-realism.mjs
+node scripts/qa-civilization.mjs
 node scripts/qa-browser.mjs
 node scripts/qa-expeditions.mjs
 node scripts/qa-large-world.mjs
