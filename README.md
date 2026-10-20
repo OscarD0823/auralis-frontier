@@ -4,6 +4,14 @@ Juego original de estrategia y supervivencia del ecosistema Auralis para web, An
 
 [Jugar](https://oscard0823.github.io/auralis-frontier/) · [Descargar Android y Windows](https://github.com/OscarD0823/auralis-frontier/releases/latest) · [Ecosistema Auralis](https://oscard0823.github.io/Pagina-Principal/)
 
+## Alpha 0.13: personajes con identidad
+
+- Base humana nueva: rostros con ojos, iris, pupilas, pelo y parpadeo; torso suave, ropa con pliegues, manos con dedos y agarre, botas y equipo con volumen.
+- Colonos, lanceros, arqueros y soldados con proporciones y prendas distintas. Los NPC, los seis pueblos y los grados de equipo comparten el nuevo cuerpo.
+- Animaciones con desplazamiento del peso, articulaciones, carga, trabajo, armas y capa.
+- Toca el retrato de una unidad para abrir el visor 3D: gira y prueba reposo, marcha, trabajo o combate. Miniaturas de cara/hombros y más acercamiento en el mapa.
+- [Diseño y validación de personajes](CHARACTERS-v13.md).
+
 ## Alpha 0.12: modelado con más volumen
 
 - Tejados con 144 tejas en relieve y tela independiente para tiendas; ayuntamiento con torres redondas, arcos, aleros y sillares.

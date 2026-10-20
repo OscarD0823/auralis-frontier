@@ -1,3 +1,4 @@
+import {replaceCharacter} from './characters.js';
 import * as T from './vendor/three.module.js';
 export function sculptBuilding(g,id,era,level,size,M,part){
  const b=(m,x,y,z,w,h,d,ry=0)=>part(g,'box',m,x,y,z,w,h,d,0,ry),c=(m,x,y,z,r,h)=>part(g,'cylinder',m,x,y,z,r,h,r);
@@ -15,7 +16,7 @@ export function sculptBuilding(g,id,era,level,size,M,part){
  if(era>=12&&['camp','barracks','garage','hangar','munitions','bunker','maintenance'].includes(id)){for(const x of[-size*.35,size*.35]){b(M.iron,x,.1,size*.42,.32,.15,.17);for(let i=0;i<3;i++)part(g,'sandbag',M.canvas,x+(i%2)*.04,.22+Math.floor(i/2)*.14,size*.42,.22,.09,.13,0,(i%2)*.12);}c(M.iron,size*.3,.9,-size*.3,.035,1.7);part(g,'dish',M.metal,size*.3,1.82,-size*.3,.26,.26,.26,.7);}
  g.userData.sculptRevision=12;
 }
-export function sculptUnit(g,type,M,part){const j=g.userData.joints;if(!j)return;const person=j.body;
+export function sculptUnit(g,type,M,part){const j=g.userData.joints;if(!j)return;const person=j.body;if(person&&!['guardian','mecha'].includes(type)){replaceCharacter(g,type,M,part);return;}
  if(person){const torso=person.children[0],head=person.children[2],robot=['guardian','mecha'].includes(type);if(torso?.isMesh){torso.geometry=part(new T.Group(),'torso',torso.material,0,0,0,1,1,1).geometry;torso.scale.set(.19,.36,.135);}if(head?.isMesh)head.geometry=part(new T.Group(),'head',head.material,0,0,0,1,1,1).geometry;
   for(const side of[-1,1]){const arm=j[side<0?'leftArm':'rightArm'],leg=j[side<0?'leftLeg':'rightLeg'];if(arm){const sleeve=arm.children[0],hand=arm.children[1];sleeve.scale.set(.12,.08,.13);sleeve.position.y=-.065;const elbow=new T.Group();elbow.position.y=-.15;arm.add(elbow);part(elbow,'limb',robot?M.metal:M.cloth,0,-.065,0,.095,.08,.1);if(hand){elbow.add(hand);hand.position.set(0,-.15,0);}if(side>0&&j.tool){elbow.add(j.tool);}j[side<0?'leftElbow':'rightElbow']=elbow;}
    if(leg){const thigh=leg.children[0],boot=leg.children[1];thigh.position.y=-.065;thigh.scale.set(.13,.08,.13);const knee=new T.Group();knee.position.y=-.15;leg.add(knee);part(knee,'limb',M.darkwood,0,-.06,0,.115,.07,.12);if(boot){knee.add(boot);boot.position.set(0,-.13,.04);boot.geometry=part(new T.Group(),'sandbag',M.boots,0,0,0,1,1,1).geometry;boot.scale.set(.08,.065,.13);}j[side<0?'leftKnee':'rightKnee']=knee;}}
