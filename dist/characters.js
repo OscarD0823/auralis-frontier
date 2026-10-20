@@ -1,3 +1,4 @@
+import {refineReferenceCharacter} from './reference-designs.js';
 import * as T from './vendor/three.module.js';
 
 // Original character meshes. Geometry is shared across the army and all NPCs.
@@ -33,7 +34,7 @@ export function replaceCharacter(g,type,M,part){const j=g.userData.joints,old=j.
  else if(mystic){add(tool,'cylinder',leather,0,.35,0,.028,1.2,.028);orb(tool,M.glow,0,1.03,0,.11,.13,.11);}
  else{add(tool,'chassis',M.iron,0,0,.19,.1,.13,.48);add(tool,'heroBoot',M.darkwood,0,-.075,.02,.05,.08,.075);add(tool,'cylinder',M.iron,0,.015,.5,.022,.3,.022,Math.PI/2);}
  if(mystic){add(body,'heroTorso',team,0,.48,0,.26,.38,.19);add(headPivot,'ring',M.gold,0,.02,-.11,.3,.3,.3,Math.PI/2);}
- Object.assign(j,limbs,{cape,body,headPivot,eyes,torso:chest,face,hairCap,tool:worker?tool:null,weapon:tool,load,hero:{worker,archer,heavy,mounted,mystic}});g.userData.characterRevision=13;g.userData.sculptRevision=12;
+ Object.assign(j,limbs,{cape,body,headPivot,eyes,torso:chest,face,hairCap,tool:worker?tool:null,weapon:tool,load,hero:{worker,archer,heavy,mounted,mystic}});refineReferenceCharacter(g,type,M,part);g.userData.characterRevision=13;g.userData.sculptRevision=12;
 }
 
 export function characterEquipment(g,level,M,part){const j=g.userData.joints;if(!j?.hero||j.body.visible===false)return false;const {body,hero,headPivot}=j;for(let n=2;n<=level;n++){if(n===2)part(body,'sandbag',M.leather,.235,.59,.06,.08,.095,.06);if(n===3)for(const side of[-1,1])part(j[side<0?'leftArm':'rightArm'],'head',hero.worker||hero.archer?M.leather:M.iron,0,.025,0,.145,.085,.145);if(n===4)part(body,'heroBrow',M.gold,0,.93,.17,.16,.13,.12);if(n===5)part(body,'sandbag',M.leather,-.235,.64,.04,.08,.12,.07);if(n===6)part(body,'head',M.canvas,.22,.81,-.15,.12,.17,.1);if(n===7)for(const side of[-1,1])part(j[side<0?'leftElbow':'rightElbow'],'cylinder',M.iron,0,-.13,0,.09,.11,.08);if(n===8)part(headPivot,'ball',M.gold,.15,.14,.13,.033,.04,.02);if(n===9)part(body,'heroTorso',hero.worker?M.leather:M.iron,0,.74,.15,.2,.34,.035);if(n===10){part(body,'box',M.gold,0,.81,.195,.075,.11,.02);part(body,'heroBrow',M.gold,0,.95,.18,.25,.15,.1);}}return true;}

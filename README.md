@@ -4,6 +4,16 @@ Juego original de estrategia y supervivencia del ecosistema Auralis para web, An
 
 [Jugar](https://oscard0823.github.io/auralis-frontier/) · [Descargar Android y Windows](https://github.com/OscarD0823/auralis-frontier/releases/latest) · [Ecosistema Auralis](https://oscard0823.github.io/Pagina-Principal/)
 
+## Alpha 0.14: referencias, texturas y dificultades
+
+- Tres modos en la guía inicial y en Ajustes: **Fácil, Difícil y Simulación**. Cambian recolección, duración de trabajos nuevos, consumo, ataques y catástrofes. Simulación mantiene los multiplicadores anteriores. Cambiar de modo conserva el mundo, los recursos y las bajas; las partidas antiguas migran a Simulación.
+- Humanos y NPC principales con cuerpos 3D texturizados, piel, ropa y animación esquelética. Comparten luz, sombras, terreno y oclusión con los edificios. Otras especies, caballería y familias de tecnología conservan sus modelos procedurales; no se han convertido todas las láminas en esculturas idénticas.
+- Piedra, madera, tejas y yeso con texturas físicas. Castillos, minas, cuarteles, instalaciones militares y puertos incorporan formas de las referencias originales. Las ocho láminas permanecen intactas: miniaturas y botón **Ver lámina original** para comparar con el visor 3D.
+- [Análisis de Social Empires y Social Wars, criterios visuales y dificultades](REFERENCES-v14.md). Se revisaron el código de preservación y la guía pública; jugar a Social Wars requiere una cuenta. No se copió su código ni sus recursos gráficos.
+- Recursos 3D gratuitos CC0 de Quaternius, incluidos localmente para web sin conexión, Android y Windows; [procedencia y créditos](ASSET-CREDITS.md).
+
+Validación: 114 pruebas del motor; catálogo de 115 láminas; selección 3D, animaciones, móviles, guardado, dificultades y carga por sectores. La escena de prueba de 64 edificios y 33 tipos de unidad usa 2352 casillas visibles y seis sectores residentes; el coste del renderizado depende del dispositivo.
+
 ## Alpha 0.13: personajes con identidad
 
 - Base humana nueva: rostros con ojos, iris, pupilas, pelo y parpadeo; torso suave, ropa con pliegues, manos con dedos y agarre, botas y equipo con volumen.

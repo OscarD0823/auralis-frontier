@@ -1,9 +1,11 @@
+import {texturedReady} from './textured-actors.js';
 import * as T from './vendor/three.module.js';
 import {materials,part,shapes,animateUnit} from './models-3d.js';
 import {designBuilding,designUnit,designCivilization} from './models-design.js';
 import {BUILDINGS,UNITS,NPCS,CIVILIZATIONS,CATEGORIES,LEVELS,UNIT_LEVELS,ERAS,SPECIES,STATUS,levelProfile} from './design-data.js';
 import {bridgeEstimate,corridorEstimate,defenseStudy,BRIDGE_MATERIALS,TRANSPORT_MODES} from './engineering.js';
 import {STRUCTURES,buildingStats} from './horizons.js';
+await texturedReady.catch(()=>{});
 const $=q=>document.querySelector(q),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),number=(n,d=1)=>Number(n).toLocaleString('es-CO',{maximumFractionDigits:d}),M=materials();
 let section='buildings',selected='camp',era=0,level=1,category='all',search='',yaw=Math.PI/4,currentModel=null,dirty=true,lab='corridor';
 const scene=new T.Scene(),light=new T.DirectionalLight('#fff0d6',3);light.position.set(-4,7,5);scene.add(light,new T.HemisphereLight('#f0f1dd','#5e6c4d',2.4));const camera=new T.OrthographicCamera(),canvas=$('#preview');
